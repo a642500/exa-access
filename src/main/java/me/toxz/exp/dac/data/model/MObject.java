@@ -1,6 +1,5 @@
 /*
- *
- *     Copyright (C) 2016  Carlos
+ *     Copyright (C) 2016 Carlos
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,12 +16,35 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.me.toxz.exp.dac.data;
+package me.toxz.exp.dac.data.model;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import com.sun.istack.internal.NotNull;
 
 /**
  * Created by Carlos on 1/4/16.
  */
-public class DatabaseHelper {
+@DatabaseTable
+public class MObject {
+    @DatabaseField(generatedId = true)
+    private int _id;
+    @DatabaseField(unique = true, canBeNull = false)
+    private String path;
 
-    public static void
+    private MObject() {
+        // keep for ORMLite
+    }
+
+    public MObject(@NotNull String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(@NotNull String path) {
+        this.path = path;
+    }
 }

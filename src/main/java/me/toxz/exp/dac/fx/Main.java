@@ -1,6 +1,5 @@
 /*
- *
- *     Copyright (C) 2016  Carlos
+ *     Copyright (C) 2016 Carlos
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,6 +23,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import me.toxz.exp.dac.data.DatabaseHelper;
+import me.toxz.exp.dac.data.model.AccessRecord;
+import me.toxz.exp.dac.data.model.AccessType;
+import me.toxz.exp.dac.data.model.MObject;
+import me.toxz.exp.dac.data.model.User;
+
+import java.sql.SQLException;
 
 /**
  * Created by Carlos on 1/4/16.
@@ -40,6 +46,15 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 1200, 800));
         primaryStage.show();
+    }
+
+    private void authenticate(User subject, AccessType type, MObject object) throws SQLException {
+        AccessRecord accessRecord = new AccessRecord(subject, object, type);
+        DatabaseHelper.open(AccessRecord.class).create(accessRecord);
+    }
+
+    private void revoke(AccessRecord record) throws SQLException {
+        DatabaseHelper.open(AccessRecord.class).delete(record);
     }
 }
 

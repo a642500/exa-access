@@ -46,6 +46,7 @@ public class GrantDialogController implements Initializable {
         Parent parent = FXMLLoader.load(GrantDialogController.class.getClassLoader().getResource("GrantDialog.fxml"));
         Scene scene = new Scene(parent, 400, 300);
         mStage.setScene(scene);
+        mStage.setTitle("Grant");
         mStage.show();
     }
 

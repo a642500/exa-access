@@ -70,6 +70,12 @@ public class ModelTest {
         TableUtils.createTableIfNotExists(mConnectionSource, User.class);
         TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
         TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
+        createInitAccount();
+    }
+
+    private void createInitAccount() throws SQLException {
+        User user = new User("admin", "admin", "admin");
+        daoUser.createIfNotExists(user);
     }
 
     @Test

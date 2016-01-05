@@ -29,6 +29,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import me.toxz.exp.dac.data.DatabaseHelper;
+import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.AccessType;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
@@ -84,6 +85,17 @@ public class GrantDialogController implements Initializable {
     }
 
     public void ok(ActionEvent actionEvent) {
+        User user = userComboBox.getSelectionModel().getSelectedItem();
+        MObject object = objectComboBox.getSelectionModel().getSelectedItem();
+        AccessType type = permissionChoiceBox.getSelectionModel().getSelectedItem();
 
+        AccessRecord record = new AccessRecord(user, object, type);
+
+        try {
+            DatabaseHelper.open(AccessRecord.class).create(record);//TODO if record exist
+            dismiss();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

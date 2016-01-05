@@ -32,8 +32,8 @@ import java.sql.SQLException;
  */
 public class DatabaseHelper {
     public static final String URL = "jdbc:mysql:///access_exp?user=root";
+    public static DatabaseType mDatabaseType;
     private static ConnectionSource mConnectionSource;
-    private static DatabaseType mDatabaseType;
 
     private static void init() throws SQLException {
         mDatabaseType = new MysqlDatabaseType();

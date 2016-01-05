@@ -35,22 +35,25 @@ import java.sql.SQLException;
  * Created by Carlos on 1/4/16.
  */
 public class Main extends Application {
-
+    protected static Stage mPrimaryStage;
     public static void main(String[] args) {
         launch(args);
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("main.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 1200, 800));
-        primaryStage.show();
-    }
+
 
     private void authenticate(User subject, AccessType type, MObject object) throws SQLException {
         AccessRecord accessRecord = new AccessRecord(subject, object, type);
         DatabaseHelper.open(AccessRecord.class).create(accessRecord);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        mPrimaryStage = primaryStage;
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
+        primaryStage.setTitle("Login");
+        primaryStage.setScene(new Scene(root, 400, 300));
+        primaryStage.show();
     }
 
     private void revoke(AccessRecord record) throws SQLException {

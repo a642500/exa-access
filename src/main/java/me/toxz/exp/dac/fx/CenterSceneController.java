@@ -28,6 +28,7 @@ import javafx.scene.control.TreeView;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
@@ -80,9 +81,8 @@ public class CenterSceneController implements Initializable {
         tableView.getItems().setAll(accesses);
     }
 
-    public void onGrant(ActionEvent actionEvent) {
-
-        add
+    public void onGrant(ActionEvent actionEvent) throws IOException {
+        GrantDialogController.show();
     }
 
     public void onRevoke(ActionEvent actionEvent) {

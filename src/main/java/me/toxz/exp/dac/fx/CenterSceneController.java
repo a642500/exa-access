@@ -23,26 +23,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.Access;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.MObject;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.dac.data.model.*;
 
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Created by Carlos on 1/5/16.
  */
 public class CenterSceneController implements Initializable {
-    @FXML TreeItem<String> subjectTreeItem;
-    @FXML TreeItem<String> objectTreeItem;
+    @FXML TreeItem<Ject> subjectTreeItem;
+    @FXML TreeItem<Ject> objectTreeItem;
     @FXML TableView<Access> tableView;
     @FXML TableColumn<Access, User> subjectColumn;
+    @FXML TreeView<Ject> treeView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,18 +54,27 @@ public class CenterSceneController implements Initializable {
     }
 
     private void setUpTree() throws SQLException {
-        DatabaseHelper.open(User.class).queryForAll().stream().map(user -> new TreeItem<>(user.getUsername())).forEach(subjectTreeItem.getChildren()::add);
-        DatabaseHelper.open(MObject.class).queryForAll().stream().map(obj -> new TreeItem<>(obj.getPath())).forEach(objectTreeItem.getChildren()::add);
+        DatabaseHelper.open(User.class).queryForAll().stream().map((Function<User, TreeItem<Ject>>) TreeItem::new).forEach(subjectTreeItem.getChildren()::add);
+        DatabaseHelper.open(MObject.class).queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
 
+        treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateTable(newValue.getValue()));
 
-        updateTable(DatabaseHelper.open(User.class).queryForAll().get(0), null);
+        updateTable(DatabaseHelper.open(User.class).queryForAll().get(0));
     }
 
-    private void updateTable(User user, MObject object) throws SQLException {
-        if ((null == user) == (object == null)) throw new IllegalArgumentException();
+    private void updateTable(Ject ject) {
 
-        AccessRecord match = new AccessRecord(user, object, null);
-        List<Access> accesses = DatabaseHelper.open(AccessRecord.class).queryForMatching(match).stream().collect(Collectors.groupingBy(AccessRecord::getObject)).values().stream().map(Access::new).collect(Collectors.toList());
+        AccessRecord match;
+        if (ject instanceof User) match = new AccessRecord(((User) ject), null, null);
+        else if (ject instanceof MObject) match = new AccessRecord(null, ((MObject) ject), null);
+        else throw new IllegalArgumentException();
+
+        List<Access> accesses = null;
+        try {
+            accesses = DatabaseHelper.open(AccessRecord.class).queryForMatching(match).stream().collect(Collectors.groupingBy(AccessRecord::getObject)).values().stream().map(Access::new).collect(Collectors.toList());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         tableView.getItems().setAll(accesses);
     }

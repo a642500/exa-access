@@ -108,10 +108,11 @@ public class ModelTest {
     @Test
     public void createAccessRecord() throws SQLException {
         User user = new User("test", "test_account", "test_password");
-        MObject object = new MObject("test_object");
+        MObject object = new MObject("test_object2");
 
 
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
+            daoUser.create(user);
             User userCreated = daoUser.queryForMatching(user).get(0);
             daoObject.create(object);
             MObject objectCreated = daoObject.queryForMatching(object).get(0);

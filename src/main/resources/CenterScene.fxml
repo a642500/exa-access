@@ -83,28 +83,8 @@
                         <TreeView fx:id="treeView" layoutX="11.0" layoutY="83.0" prefHeight="200.0" prefWidth="200.0">
                             <TreeItem expanded="true" value="DAC">
                                 <children>
-                                    <TreeItem expanded="true" value="Subject" fx:id="subjectTreeItem">
-                                    </TreeItem>
-                                    <TreeItem expanded="false" value="Object" fx:id="objectTreeItem">
-                                        <children>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                        </children>
-                                    </TreeItem>
-                                    <TreeItem expanded="false" value="Access" fx:id="accessTreeItem">
-                                        <children>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                            <TreeItem value="1"></TreeItem>
-                                        </children>
-                                    </TreeItem>
+                                    <TreeItem expanded="true" value="Subject" fx:id="subjectTreeItem"/>
+                                    <TreeItem expanded="false" value="Object" fx:id="objectTreeItem"/>
                                 </children>
                             </TreeItem>
                         </TreeView>

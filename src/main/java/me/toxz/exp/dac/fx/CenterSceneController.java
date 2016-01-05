@@ -18,21 +18,35 @@
 
 package me.toxz.exp.dac.fx;
 
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TreeItem;
+import me.toxz.exp.dac.data.DatabaseHelper;
+import me.toxz.exp.dac.data.model.MObject;
+import me.toxz.exp.dac.data.model.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
  * Created by Carlos on 1/5/16.
  */
 public class CenterSceneController implements Initializable {
+    @FXML TreeItem<String> subjectTreeItem;
+    @FXML TreeItem<String> objectTreeItem;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        try {
+            setUpTree();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void setUpTree() {
-
+    private void setUpTree() throws SQLException {
+        DatabaseHelper.open(User.class).queryForAll().stream().map(user -> new TreeItem<>(user.getUsername())).forEach(subjectTreeItem.getChildren()::add);
+        DatabaseHelper.open(MObject.class).queryForAll().stream().map(obj -> new TreeItem<>(obj.getPath())).forEach(objectTreeItem.getChildren()::add);
     }
 }

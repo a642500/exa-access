@@ -18,38 +18,8 @@
 
 package me.toxz.exp.dac.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-import com.sun.istack.internal.NotNull;
-
 /**
- * Created by Carlos on 1/4/16.
+ * Created by Carlos on 1/5/16.
  */
-@DatabaseTable
-public class MObject implements Ject {
-    @DatabaseField(generatedId = true)
-    private int _id;
-    @DatabaseField(unique = true, canBeNull = false)
-    private String path;
-
-    private MObject() {
-        // keep for ORMLite
-    }
-
-    public MObject(@NotNull String path) {
-        this.path = path;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(@NotNull String path) {
-        this.path = path;
-    }
-
-    @Override
-    public String toString() {
-        return path;
-    }
+public interface Ject {
 }

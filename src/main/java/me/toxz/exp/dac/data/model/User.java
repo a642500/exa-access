@@ -26,7 +26,7 @@ import com.sun.istack.internal.NotNull;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class User extends MSubject {
+public class User extends MSubject implements Ject {
     @DatabaseField(canBeNull = false)
     private String username;
     @DatabaseField(unique = true, canBeNull = false)
@@ -79,5 +79,10 @@ public class User extends MSubject {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof User && username.equals(((User) obj).username) && account.equals(((User) obj).account) && passwordHash.equals(((User) obj).passwordHash);
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 }

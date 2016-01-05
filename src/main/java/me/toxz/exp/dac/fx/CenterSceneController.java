@@ -73,6 +73,7 @@ public class CenterSceneController implements Initializable {
 
         List<Access> accesses = null;
         try {
+            //TODO not merge
             accesses = DatabaseHelper.open(AccessRecord.class).queryForMatching(match).stream().collect(Collectors.groupingBy(AccessRecord::getObject)).values().stream().map(Access::new).collect(Collectors.toList());
         } catch (SQLException e) {
             e.printStackTrace();

@@ -18,6 +18,7 @@
 
 package me.toxz.exp.dac.fx;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -77,5 +78,14 @@ public class CenterSceneController implements Initializable {
         }
 
         tableView.getItems().setAll(accesses);
+    }
+
+    public void onGrant(ActionEvent actionEvent) {
+
+        add
+    }
+
+    public void onRevoke(ActionEvent actionEvent) {
+
     }
 }

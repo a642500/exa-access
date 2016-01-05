@@ -52,7 +52,7 @@ public class LoginController extends AnchorPane implements Initializable {
     Application mApp;
 
     private void goToMainScene() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
         Main.mPrimaryStage.setScene(new Scene(root, 1200, 800));
     }
 

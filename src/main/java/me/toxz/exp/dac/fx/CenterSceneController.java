@@ -20,14 +20,20 @@ package me.toxz.exp.dac.fx;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import me.toxz.exp.dac.data.DatabaseHelper;
+import me.toxz.exp.dac.data.model.Access;
+import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * Created by Carlos on 1/5/16.
@@ -35,6 +41,8 @@ import java.util.ResourceBundle;
 public class CenterSceneController implements Initializable {
     @FXML TreeItem<String> subjectTreeItem;
     @FXML TreeItem<String> objectTreeItem;
+    @FXML TableView<Access> tableView;
+    @FXML TableColumn<Access, User> subjectColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,5 +56,17 @@ public class CenterSceneController implements Initializable {
     private void setUpTree() throws SQLException {
         DatabaseHelper.open(User.class).queryForAll().stream().map(user -> new TreeItem<>(user.getUsername())).forEach(subjectTreeItem.getChildren()::add);
         DatabaseHelper.open(MObject.class).queryForAll().stream().map(obj -> new TreeItem<>(obj.getPath())).forEach(objectTreeItem.getChildren()::add);
+
+
+        updateTable(DatabaseHelper.open(User.class).queryForAll().get(0), null);
+    }
+
+    private void updateTable(User user, MObject object) throws SQLException {
+        if ((null == user) == (object == null)) throw new IllegalArgumentException();
+
+        AccessRecord match = new AccessRecord(user, object, null);
+        List<Access> accesses = DatabaseHelper.open(AccessRecord.class).queryForMatching(match).stream().collect(Collectors.groupingBy(AccessRecord::getObject)).values().stream().map(Access::new).collect(Collectors.toList());
+
+        tableView.getItems().setAll(accesses);
     }
 }

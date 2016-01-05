@@ -75,7 +75,7 @@ public class ModelTest {
 
     private void createInitAccount() throws SQLException {
         User user = new User("admin", "admin", "admin");
-        daoUser.createIfNotExists(user);
+        DatabaseHelper.open(User.class).createIfNotExists(user);
     }
 
     @Test
@@ -112,7 +112,6 @@ public class ModelTest {
 
 
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
-            daoUser.create(user);
             User userCreated = daoUser.queryForMatching(user).get(0);
             daoObject.create(object);
             MObject objectCreated = daoObject.queryForMatching(object).get(0);

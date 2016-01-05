@@ -29,9 +29,9 @@ public class AccessRecord {
     @DatabaseField(generatedId = true)
     private int id;
 
-    @DatabaseField(canBeNull = false, foreign = true)
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private User subject;
-    @DatabaseField(canBeNull = false, foreign = true)
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private MObject object;
     @DatabaseField(canBeNull = false)
     private AccessType accessType;
@@ -44,5 +44,29 @@ public class AccessRecord {
         this.subject = subject;
         this.object = object;
         this.accessType = accessType;
+    }
+
+    public AccessType getAccessType() {
+        return accessType;
+    }
+
+    public void setAccessType(AccessType accessType) {
+        this.accessType = accessType;
+    }
+
+    public User getSubject() {
+        return subject;
+    }
+
+    public void setSubject(User subject) {
+        this.subject = subject;
+    }
+
+    public MObject getObject() {
+        return object;
+    }
+
+    public void setObject(MObject object) {
+        this.object = object;
     }
 }

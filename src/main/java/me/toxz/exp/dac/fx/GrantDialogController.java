@@ -24,12 +24,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import me.toxz.exp.dac.data.DatabaseHelper;
+import me.toxz.exp.dac.data.model.AccessType;
+import me.toxz.exp.dac.data.model.MObject;
+import me.toxz.exp.dac.data.model.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -37,7 +43,9 @@ import java.util.ResourceBundle;
  */
 public class GrantDialogController implements Initializable {
     private static Stage mStage;
-    @FXML Button cancelButton;
+    @FXML ComboBox<User> userComboBox;
+    @FXML ComboBox<MObject> objectComboBox;
+    @FXML ChoiceBox<AccessType> permissionChoiceBox;
 
     public static void show() throws IOException {
         mStage = new Stage();
@@ -58,7 +66,16 @@ public class GrantDialogController implements Initializable {
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        try {
+            userComboBox.getItems().addAll(DatabaseHelper.open(User.class).queryForAll());
+            userComboBox.getSelectionModel().select(0);
+            objectComboBox.getItems().addAll(DatabaseHelper.open(MObject.class).queryForAll());
+            objectComboBox.getSelectionModel().select(0);
+            permissionChoiceBox.getItems().addAll(AccessType.values());
+            permissionChoiceBox.getSelectionModel().select(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <!--
   ~     Copyright (C) 2016 Carlos
   ~
@@ -21,11 +18,15 @@
   ~     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
   -->
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.toxz.exp.dac.fx.GrantDialogController" hgap="14.0"
-          maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0"
-          prefWidth="373.0" vgap="20.0" xmlns="http://javafx.com/javafx/8">
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity"
+          minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0" prefWidth="373.0" vgap="20.0"
+          xmlns="http://javafx.com/javafx/8" fx:controller="me.toxz.exp.dac.fx.GrantDialogController">
     <children>
-        <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="userComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
         <HBox maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity"
               GridPane.columnIndex="2" GridPane.rowIndex="4">
             <children>
@@ -35,15 +36,15 @@
                     </HBox.margin>
                 </HBox>
                 <Pane maxWidth="+Infinity" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="cancelButton" cancelButton="true" onAction="#cancel" minWidth="80.0"
-                        mnemonicParsing="false" text="Cancel" HBox.hgrow="NEVER">
+                <Button fx:id="cancelButton" cancelButton="true" minWidth="80.0" mnemonicParsing="false"
+                        onAction="#cancel" text="Cancel" HBox.hgrow="NEVER">
                     <HBox.margin>
                         <Insets/>
                     </HBox.margin>
                 </Button>
                 <HBox fx:id="okParent" alignment="CENTER">
                     <children>
-                        <Button fx:id="okButton" minWidth="80.0" onAction="#ok" mnemonicParsing="false" text="Ok"
+                        <Button fx:id="okButton" minWidth="80.0" mnemonicParsing="false" onAction="#ok" text="Ok"
                                 HBox.hgrow="NEVER">
                             <HBox.margin>
                                 <Insets left="14.0"/>
@@ -56,8 +57,8 @@
         <Label text="Permission" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
         <Label text="Subject" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         <Label text="Object" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-        <ChoiceBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="objectComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <ChoiceBox fx:id="permissionChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
         <Label text="Grant" GridPane.columnIndex="1"/>
     </children>
     <columnConstraints>

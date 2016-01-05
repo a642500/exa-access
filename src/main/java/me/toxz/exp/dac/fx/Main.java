@@ -29,6 +29,7 @@ import me.toxz.exp.dac.data.model.AccessType;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -50,10 +51,16 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         mPrimaryStage = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
         primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 400, 300));
+        primaryStage.setScene(getFirstScene());
         primaryStage.show();
+    }
+
+    private Scene getFirstScene() throws IOException {
+        //        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
+        //        return new Scene(root, 400, 300);
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
+        return new Scene(root, 1200, 800);
     }
 
     private void revoke(AccessRecord record) throws SQLException {

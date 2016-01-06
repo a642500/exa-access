@@ -60,14 +60,15 @@ public class LoginController extends AnchorPane implements Initializable {
     }
 
     public void processLogin(ActionEvent event) throws Exception {
-        String account = userId.getText();
-        String pass = password.getText();
+        final String account = userId.getText();
+        final String pass = password.getText();
 
-        User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("account", account).queryForFirst();
+        final User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("account", account).queryForFirst();
 
         if (user != null) {
             if (user.isPasswordValidate(pass)) {
                 errorMessage.setText("Login success.");
+                Main.setLoginUser(user);
                 goToMainScene();
             } else {
                 errorMessage.setText("Account or password is incorrect");

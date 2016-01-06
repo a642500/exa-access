@@ -37,11 +37,18 @@ import java.sql.SQLException;
  */
 public class Main extends Application {
     protected static Stage mPrimaryStage;
+    private static User mUser;
     public static void main(String[] args) {
         launch(args);
     }
 
+    public static User getLoginUser() {
+        return mUser;
+    }
 
+    static void setLoginUser(User user) {
+        mUser = user;
+    }
 
     private void authenticate(User subject, AccessType type, MObject object) throws SQLException {
         AccessRecord accessRecord = new AccessRecord(subject, object, type);

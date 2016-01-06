@@ -55,6 +55,11 @@ public class MObject implements Ject {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MObject && this._id == ((MObject) obj)._id;
+    }
+
+    @Override
     public String toString() {
         return path;
     }

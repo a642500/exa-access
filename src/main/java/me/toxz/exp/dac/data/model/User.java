@@ -27,6 +27,7 @@ import com.sun.istack.internal.NotNull;
  */
 @DatabaseTable
 public class User extends MSubject implements Ject {
+    @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true)
     private String username;
     @DatabaseField
@@ -67,7 +68,7 @@ public class User extends MSubject implements Ject {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof User && username.equals(((User) obj).username) && passwordHash.equals(((User) obj).passwordHash);
+        return obj instanceof User && this._id == ((User) obj)._id;
     }
 
     @Override

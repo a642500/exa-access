@@ -27,10 +27,8 @@ import com.sun.istack.internal.NotNull;
  */
 @DatabaseTable
 public class User extends MSubject implements Ject {
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, unique = true)
     private String username;
-    @DatabaseField(unique = true, canBeNull = false)
-    private String account;
     @DatabaseField
     private String passwordHash;
 
@@ -38,9 +36,8 @@ public class User extends MSubject implements Ject {
         // keep for ORMLite
     }
 
-    public User(@NotNull String username, @NotNull String account, String password) {
+    public User(@NotNull String username, String password) {
         this.username = username;
-        this.account = account;
         updatePassword(password);
     }
 
@@ -50,14 +47,6 @@ public class User extends MSubject implements Ject {
 
     public void setUsername(@NotNull String username) {
         this.username = username;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(@NotNull String account) {
-        this.account = account;
     }
 
     public String getPasswordHash() {
@@ -78,7 +67,7 @@ public class User extends MSubject implements Ject {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof User && username.equals(((User) obj).username) && account.equals(((User) obj).account) && passwordHash.equals(((User) obj).passwordHash);
+        return obj instanceof User && username.equals(((User) obj).username) && passwordHash.equals(((User) obj).passwordHash);
     }
 
     @Override

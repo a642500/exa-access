@@ -75,7 +75,10 @@ public class CenterSceneController implements Initializable {
     }
 
     private void setUpTree() throws SQLException {
-        treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> refreshTable(newValue.getValue()));
+        treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            mCurrentJect = newValue.getValue();
+            refreshTable(newValue.getValue());
+        });
     }
 
     private void refreshTable(@NotNull final Ject ject) {

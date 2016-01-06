@@ -18,6 +18,7 @@
 
 package me.toxz.exp.dac.fx;
 
+import com.j256.ormlite.dao.Dao;
 import com.sun.istack.internal.NotNull;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.event.ActionEvent;
@@ -137,16 +138,32 @@ public class CenterSceneController implements Initializable {
         result.ifPresent(this::deleteAccessRecords);
     }
 
+    private void revoke(AccessRecord record) {
+        try {
+
+            User user = record.getSubject();
+            final MObject object = record.getObject();
+            Dao<AccessRecord, Integer> dao = DatabaseHelper.getAccessRecordDao();
+            dao.delete(record);
+
+            List<AccessRecord> accessRecords = dao.queryForMatching(new AccessRecord(null, object, null, user));
+            for (AccessRecord accessRecord : accessRecords) {
+                AccessRecord match = new AccessRecord(user, object, accessRecord.getAccessType(), null);
+                if (dao.queryForMatching(match).size() == 0 || accessRecord.getAccessType() != AccessType.CONTROL && dao.queryForMatching(new AccessRecord(user, object, AccessType.CONTROL, null)).size() == 0) {
+                    revoke(accessRecord);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void deleteAccessRecords(List<AccessRecord> toDeletes) {
         if (toDeletes == null) {
             return;
         }
-        try {
-            DatabaseHelper.getAccessRecordDao().delete(toDeletes);
-            refreshTable(mCurrentJect);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        toDeletes.forEach(this::revoke);
+        refreshTable(mCurrentJect);
     }
 
     public void onCreateObject(ActionEvent actionEvent) {

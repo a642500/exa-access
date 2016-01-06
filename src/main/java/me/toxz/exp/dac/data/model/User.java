@@ -26,7 +26,7 @@ import com.sun.istack.internal.NotNull;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class User extends MSubject implements Ject {
+public class User implements Ject {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true)
     private String username;

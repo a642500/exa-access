@@ -33,6 +33,7 @@ import org.controlsfx.control.CheckListView;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -40,8 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static me.toxz.exp.dac.data.DatabaseHelper.getMObjectDao;
-import static me.toxz.exp.dac.data.DatabaseHelper.getUserDao;
+import static me.toxz.exp.dac.data.DatabaseHelper.*;
 
 /**
  * Created by Carlos on 1/5/16.
@@ -184,9 +184,13 @@ public class CenterSceneController implements Initializable {
         result.ifPresent(s -> {
             try {
                 DatabaseHelper.callInTransaction(() -> {
-                    final MObject o = new MObject(s, Main.getLoginUser());
+                    User user = Main.getLoginUser();
+                    final MObject o = new MObject(s, user);
                     getMObjectDao().create(o);
-                    //                    final MObject created = getMObjectDao().queryForMatching(o).get(0);
+                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user, o, accessType)).collect(Collectors.toList());
+                    for (AccessRecord accessRecord : accessRecords) {
+                        getAccessRecordDao().create(accessRecord);
+                    }
                     return null;
                 });
                 refreshTree();

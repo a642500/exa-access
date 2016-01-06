@@ -37,6 +37,7 @@ import me.toxz.exp.dac.data.model.User;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -82,7 +83,9 @@ public class GrantDialogController implements Initializable {
             List<AccessRecord> controllable = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(user, null, AccessType.CONTROL));
             objectComboBox.getItems().addAll(controllable.stream().map(AccessRecord::getObject).collect(Collectors.toList()));
             objectComboBox.getSelectionModel().select(0);
-            permissionChoiceBox.getItems().addAll(AccessType.values());
+            List<AccessType> types = Arrays.stream(AccessType.values()).collect(Collectors.toList());
+            types.remove(AccessType.CONTROL);//TODO type1: center
+            permissionChoiceBox.getItems().addAll(types);
             permissionChoiceBox.getSelectionModel().select(0);
         } catch (SQLException e) {
             e.printStackTrace();

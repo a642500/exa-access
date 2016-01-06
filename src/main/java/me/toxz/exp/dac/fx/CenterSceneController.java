@@ -18,6 +18,7 @@
 
 package me.toxz.exp.dac.fx;
 
+import com.sun.istack.internal.Nullable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -51,6 +52,7 @@ public class CenterSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             setUpTree();
+            updateTable(null);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,12 +63,12 @@ public class CenterSceneController implements Initializable {
         DatabaseHelper.getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
 
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateTable(newValue.getValue()));
-
-        updateTable(DatabaseHelper.getUserDao().queryForAll().get(0));
     }
 
-    private void updateTable(Ject ject) {
-
+    private void updateTable(@Nullable Ject ject) {
+        if (ject == null) {
+            ject = Main.getLoginUser();
+        }
         AccessRecord match;
         if (ject instanceof User) match = new AccessRecord(((User) ject), null, null);
         else if (ject instanceof MObject) match = new AccessRecord(null, ((MObject) ject), null);

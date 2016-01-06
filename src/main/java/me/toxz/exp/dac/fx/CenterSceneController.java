@@ -42,6 +42,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static me.toxz.exp.dac.data.DatabaseHelper.*;
+import static me.toxz.exp.dac.data.model.User.admin;
 
 /**
  * Created by Carlos on 1/5/16.
@@ -118,7 +119,7 @@ public class CenterSceneController implements Initializable {
         revokeDialog.getDialogPane().getButtonTypes().addAll(revokeButtonType, revokeAllButtonType, ButtonType.CANCEL);
 
 
-        final List<AccessRecord> accessRecordList = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(Main.getLoginUser(), null, null, null));
+        final List<AccessRecord> accessRecordList = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(null, null, null, Main.getLoginUser()));
         final CheckListView<AccessRecord> listView = new CheckListView<AccessRecord>(new ObservableListWrapper<>(accessRecordList));
 
         revokeDialog.getDialogPane().setContent(listView);
@@ -187,7 +188,7 @@ public class CenterSceneController implements Initializable {
                     User user = Main.getLoginUser();
                     final MObject o = new MObject(s, user);
                     getMObjectDao().create(o);
-                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user, o, accessType, null)).collect(Collectors.toList());
+                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user, o, accessType, admin())).collect(Collectors.toList());
                     for (AccessRecord accessRecord : accessRecords) {
                         getAccessRecordDao().create(accessRecord);
                     }

@@ -21,12 +21,16 @@ package me.toxz.exp.dac.data.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.sun.istack.internal.NotNull;
+import me.toxz.exp.dac.data.DatabaseHelper;
+
+import java.sql.SQLException;
 
 /**
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
 public class User implements Ject {
+    private static User admin;
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true)
     private String username;
@@ -40,6 +44,17 @@ public class User implements Ject {
     public User(@NotNull String username, String password) {
         this.username = username;
         updatePassword(password);
+    }
+
+    public static User admin() {
+        if (admin == null) {
+            try {
+                admin = DatabaseHelper.getUserDao().queryForMatching(new User("admin", null)).get(0);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return admin;
     }
 
     public String getUsername() {

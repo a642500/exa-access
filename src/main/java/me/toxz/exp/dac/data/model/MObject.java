@@ -63,4 +63,9 @@ public class MObject implements Ject {
     public String toString() {
         return path;
     }
+
+    @Override
+    public int hashCode() {
+        return ("MObject" + _id).hashCode();
+    }
 }

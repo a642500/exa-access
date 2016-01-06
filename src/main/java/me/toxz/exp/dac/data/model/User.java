@@ -72,6 +72,11 @@ public class User implements Ject {
     }
 
     @Override
+    public int hashCode() {
+        return ("User" + _id).hashCode();
+    }
+
+    @Override
     public String toString() {
         return username;
     }

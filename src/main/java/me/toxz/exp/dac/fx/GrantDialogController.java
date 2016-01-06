@@ -38,17 +38,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 /**
  * Created by Carlos on 1/6/16.
  */
 public class GrantDialogController implements Initializable {
     private static Stage mStage;
+    private static Consumer<AccessRecord> mResultCallback;
     @FXML ComboBox<User> userComboBox;
     @FXML ComboBox<MObject> objectComboBox;
     @FXML ChoiceBox<AccessType> permissionChoiceBox;
 
-    public static void show() throws IOException {
+    public static void show(Consumer<AccessRecord> resultCallback) throws IOException {
+        mResultCallback = resultCallback;
         mStage = new Stage();
         mStage.initStyle(StageStyle.UTILITY);
 
@@ -59,9 +62,12 @@ public class GrantDialogController implements Initializable {
         mStage.show();
     }
 
-    public static void dismiss() {
+    public static void dismiss(AccessRecord record) {
         mStage.close();
         mStage = null;
+        if (mResultCallback != null) {
+            mResultCallback.accept(record);
+        }
     }
 
     @FXML
@@ -81,7 +87,7 @@ public class GrantDialogController implements Initializable {
 
 
     public void cancel(ActionEvent actionEvent) {
-        dismiss();
+        dismiss(null);
     }
 
     public void ok(ActionEvent actionEvent) {
@@ -93,7 +99,8 @@ public class GrantDialogController implements Initializable {
 
         try {
             DatabaseHelper.getAccessRecordDao().create(record);//TODO if record exist
-            dismiss();
+
+            dismiss(record);
         } catch (SQLException e) {
             e.printStackTrace();
         }

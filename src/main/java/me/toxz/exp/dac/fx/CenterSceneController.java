@@ -19,6 +19,7 @@
 package me.toxz.exp.dac.fx;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +28,7 @@ import javafx.scene.control.*;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.*;
 import me.toxz.exp.dac.fx.animation.ShakeTransition;
+import org.controlsfx.control.CheckListView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -106,8 +108,44 @@ public class CenterSceneController implements Initializable {
         });
     }
 
-    public void onRevoke(ActionEvent actionEvent) {
+    public void onRevoke(ActionEvent actionEvent) throws SQLException {
+        Dialog<List<AccessRecord>> revokeDialog = new Dialog<>();
+        revokeDialog.setTitle("Revoke");
+        revokeDialog.setHeaderText("Please check permission you want to revoke");
 
+        ButtonType revokeButtonType = new ButtonType("Revoke", ButtonBar.ButtonData.OK_DONE);
+        ButtonType revokeAllButtonType = new ButtonType("Revoke All", ButtonBar.ButtonData.OK_DONE);
+        revokeDialog.getDialogPane().getButtonTypes().addAll(revokeButtonType, revokeAllButtonType, ButtonType.CANCEL);
+
+
+        final List<AccessRecord> accessRecordList = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(Main.getLoginUser(), null, null));
+        final CheckListView<AccessRecord> listView = new CheckListView<AccessRecord>(new ObservableListWrapper<>(accessRecordList));
+
+        revokeDialog.getDialogPane().setContent(listView);
+        revokeDialog.setResultConverter(param -> {
+            if (param == revokeAllButtonType) {
+                return accessRecordList;
+            } else if (param == revokeButtonType) {
+                return listView.getCheckModel().getCheckedItems();
+            }
+            return null;
+        });
+
+        Optional<List<AccessRecord>> result = revokeDialog.showAndWait();
+
+        result.ifPresent(this::deleteAccessRecords);
+    }
+
+    private void deleteAccessRecords(List<AccessRecord> toDeletes) {
+        if (toDeletes == null) {
+            return;
+        }
+        try {
+            DatabaseHelper.getAccessRecordDao().delete(toDeletes);
+            refreshTable(mCurrentJect);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onCreateObject(ActionEvent actionEvent) {

@@ -69,4 +69,9 @@ public class AccessRecord {
     public void setObject(MObject object) {
         this.object = object;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s can %s %s", subject, accessType, object);
+    }
 }

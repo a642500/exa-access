@@ -74,9 +74,10 @@ public class GrantDialogController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            User user = Main.getLoginUser();
             userComboBox.getItems().addAll(DatabaseHelper.getUserDao().queryForAll());
             userComboBox.getSelectionModel().select(0);
-            objectComboBox.getItems().addAll(DatabaseHelper.getMObjectDao().queryForAll());
+            objectComboBox.getItems().addAll(DatabaseHelper.getMObjectDao().queryForMatching(new MObject(null, user)));
             objectComboBox.getSelectionModel().select(0);
             permissionChoiceBox.getItems().addAll(AccessType.values());
             permissionChoiceBox.getSelectionModel().select(0);

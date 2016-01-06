@@ -37,8 +37,10 @@ import me.toxz.exp.dac.data.model.User;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Created by Carlos on 1/6/16.
@@ -77,7 +79,8 @@ public class GrantDialogController implements Initializable {
             User user = Main.getLoginUser();
             userComboBox.getItems().addAll(DatabaseHelper.getUserDao().queryForAll());
             userComboBox.getSelectionModel().select(0);
-            objectComboBox.getItems().addAll(DatabaseHelper.getMObjectDao().queryForMatching(new MObject(null, user)));
+            List<AccessRecord> controllable = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(user, null, AccessType.CONTROL));
+            objectComboBox.getItems().addAll(controllable.stream().map(AccessRecord::getObject).collect(Collectors.toList()));
             objectComboBox.getSelectionModel().select(0);
             permissionChoiceBox.getItems().addAll(AccessType.values());
             permissionChoiceBox.getSelectionModel().select(0);

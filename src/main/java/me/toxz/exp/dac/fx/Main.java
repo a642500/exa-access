@@ -45,7 +45,7 @@ public class Main extends Application {
 
     private void authenticate(User subject, AccessType type, MObject object) throws SQLException {
         AccessRecord accessRecord = new AccessRecord(subject, object, type);
-        DatabaseHelper.open(AccessRecord.class).create(accessRecord);
+        DatabaseHelper.getAccessRecordDao().create(accessRecord);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Main extends Application {
     }
 
     private void revoke(AccessRecord record) throws SQLException {
-        DatabaseHelper.open(AccessRecord.class).delete(record);
+        DatabaseHelper.getAccessRecordDao().delete(record);
     }
 }
 

@@ -65,7 +65,7 @@ public class LoginController extends AnchorPane implements Initializable {
         String account = userId.getText();
         String pass = password.getText();
 
-        User user = DatabaseHelper.open(User.class).queryBuilder().where().eq("account", account).queryForFirst();
+        User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("account", account).queryForFirst();
 
         if (user != null) {
             if (user.isPasswordValidate(pass)) {

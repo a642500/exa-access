@@ -68,9 +68,9 @@ public class GrantDialogController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            userComboBox.getItems().addAll(DatabaseHelper.open(User.class).queryForAll());
+            userComboBox.getItems().addAll(DatabaseHelper.getUserDao().queryForAll());
             userComboBox.getSelectionModel().select(0);
-            objectComboBox.getItems().addAll(DatabaseHelper.open(MObject.class).queryForAll());
+            objectComboBox.getItems().addAll(DatabaseHelper.getMObjectDao().queryForAll());
             objectComboBox.getSelectionModel().select(0);
             permissionChoiceBox.getItems().addAll(AccessType.values());
             permissionChoiceBox.getSelectionModel().select(0);
@@ -92,7 +92,7 @@ public class GrantDialogController implements Initializable {
         AccessRecord record = new AccessRecord(user, object, type);
 
         try {
-            DatabaseHelper.open(AccessRecord.class).create(record);//TODO if record exist
+            DatabaseHelper.getAccessRecordDao().create(record);//TODO if record exist
             dismiss();
         } catch (SQLException e) {
             e.printStackTrace();

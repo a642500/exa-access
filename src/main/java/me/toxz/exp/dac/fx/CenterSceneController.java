@@ -54,12 +54,12 @@ public class CenterSceneController implements Initializable {
     }
 
     private void setUpTree() throws SQLException {
-        DatabaseHelper.open(User.class).queryForAll().stream().map((Function<User, TreeItem<Ject>>) TreeItem::new).forEach(subjectTreeItem.getChildren()::add);
-        DatabaseHelper.open(MObject.class).queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
+        DatabaseHelper.getUserDao().queryForAll().stream().map((Function<User, TreeItem<Ject>>) TreeItem::new).forEach(subjectTreeItem.getChildren()::add);
+        DatabaseHelper.getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
 
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateTable(newValue.getValue()));
 
-        updateTable(DatabaseHelper.open(User.class).queryForAll().get(0));
+        updateTable(DatabaseHelper.getUserDao().queryForAll().get(0));
     }
 
     private void updateTable(Ject ject) {
@@ -72,7 +72,7 @@ public class CenterSceneController implements Initializable {
         List<Access> accesses = null;
         try {
             //TODO not merge
-            accesses = DatabaseHelper.open(AccessRecord.class).queryForMatching(match).stream().collect(Collectors.groupingBy(AccessRecord::getObject)).values().stream().map(Access::new).collect(Collectors.toList());
+            accesses = DatabaseHelper.getAccessRecordDao().queryForMatching(match).stream().collect(Collectors.groupingBy(AccessRecord::getObject)).values().stream().map(Access::new).collect(Collectors.toList());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,7 +95,7 @@ public class CenterSceneController implements Initializable {
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(s -> {
-            
+
         });
     }
 }

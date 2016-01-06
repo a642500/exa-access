@@ -141,7 +141,7 @@ public class ModelTest {
             createObject(testObject(user));
             final MObject object = findObjectInDataBase(testObject(user));
 
-            AccessRecord access = new AccessRecord(user, object, AccessType.WRITE);
+            AccessRecord access = new AccessRecord(user, object, AccessType.WRITE, null);
 
             assertEquals(1, daoAccess.create(access));
             List<AccessRecord> accessRecords = daoAccess.queryForMatching(access);

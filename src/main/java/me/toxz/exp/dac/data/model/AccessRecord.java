@@ -29,21 +29,25 @@ public class AccessRecord {
     @DatabaseField(generatedId = true)
     private int id;
 
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
-    private User subject;
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
-    private MObject object;
-    @DatabaseField(canBeNull = false)
-    private AccessType accessType;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private User subject;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private MObject object;
+    @DatabaseField(canBeNull = false) private AccessType accessType;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private User grantedUser;
 
     private AccessRecord() {
         // keep for ORMLite
     }
 
-    public AccessRecord(User subject, MObject object, AccessType accessType) {
+    public AccessRecord(User subject, MObject object, AccessType accessType, User grantedUser) {
         this.subject = subject;
         this.object = object;
         this.accessType = accessType;
+        this.grantedUser = grantedUser;
+
+    }
+
+    public User getGrantedUser() {
+        return grantedUser;
     }
 
     public AccessType getAccessType() {

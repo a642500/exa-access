@@ -85,8 +85,8 @@ public class CenterSceneController implements Initializable {
 
     private void refreshTable(@NotNull final Ject ject) {
         AccessRecord match;
-        if (ject instanceof User) match = new AccessRecord(((User) ject), null, null);
-        else if (ject instanceof MObject) match = new AccessRecord(null, ((MObject) ject), null);
+        if (ject instanceof User) match = new AccessRecord(((User) ject), null, null, null);
+        else if (ject instanceof MObject) match = new AccessRecord(null, ((MObject) ject), null, null);
         else throw new IllegalArgumentException();
 
         List<Access> accesses = null;
@@ -118,7 +118,7 @@ public class CenterSceneController implements Initializable {
         revokeDialog.getDialogPane().getButtonTypes().addAll(revokeButtonType, revokeAllButtonType, ButtonType.CANCEL);
 
 
-        final List<AccessRecord> accessRecordList = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(Main.getLoginUser(), null, null));
+        final List<AccessRecord> accessRecordList = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(Main.getLoginUser(), null, null, null));
         final CheckListView<AccessRecord> listView = new CheckListView<AccessRecord>(new ObservableListWrapper<>(accessRecordList));
 
         revokeDialog.getDialogPane().setContent(listView);
@@ -187,7 +187,7 @@ public class CenterSceneController implements Initializable {
                     User user = Main.getLoginUser();
                     final MObject o = new MObject(s, user);
                     getMObjectDao().create(o);
-                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user, o, accessType)).collect(Collectors.toList());
+                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user, o, accessType, null)).collect(Collectors.toList());
                     for (AccessRecord accessRecord : accessRecords) {
                         getAccessRecordDao().create(accessRecord);
                     }

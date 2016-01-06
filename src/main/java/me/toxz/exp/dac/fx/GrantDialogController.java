@@ -82,12 +82,12 @@ public class GrantDialogController implements Initializable {
             userComboBox.getSelectionModel().select(0);
 
             final Dao<AccessRecord, Integer> accessRecordDao = DatabaseHelper.getAccessRecordDao();
-            List<AccessRecord> controllable = accessRecordDao.queryForMatching(new AccessRecord(user, null, AccessType.CONTROL));
+            List<AccessRecord> controllable = accessRecordDao.queryForMatching(new AccessRecord(user, null, AccessType.CONTROL, null));
             objectComboBox.getItems().addAll(controllable.stream().map(AccessRecord::getObject).collect(Collectors.toList()));
 
             objectComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                 try {
-                    List<AccessRecord> records = accessRecordDao.queryForMatching(new AccessRecord(user, newValue, null));
+                    List<AccessRecord> records = accessRecordDao.queryForMatching(new AccessRecord(user, newValue, null, null));
                     List<AccessType> types = records.stream().map(AccessRecord::getAccessType).collect(Collectors.toList());
                     types.remove(AccessType.CONTROL);//TODO type1: center
                     //TODO grant repeat.  for example: A has R,C for o, A grant A as R for o. Then two same record in AccessRecord
@@ -113,7 +113,7 @@ public class GrantDialogController implements Initializable {
         MObject object = objectComboBox.getSelectionModel().getSelectedItem();
         AccessType type = permissionChoiceBox.getSelectionModel().getSelectedItem();
 
-        AccessRecord record = new AccessRecord(user, object, type);
+        AccessRecord record = new AccessRecord(user, object, type, Main.getLoginUser());
 
         try {
             DatabaseHelper.getAccessRecordDao().create(record);//TODO if record exist

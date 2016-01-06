@@ -31,13 +31,19 @@ public class MObject implements Ject {
     private int _id;
     @DatabaseField(unique = true, canBeNull = false)
     private String path;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2) private User owner;
 
     private MObject() {
         // keep for ORMLite
     }
 
-    public MObject(@NotNull String path) {
+    public MObject(@NotNull String path, User owner) {
         this.path = path;
+        this.owner = owner;
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     public String getPath() {

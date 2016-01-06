@@ -97,7 +97,7 @@ public class ModelTest {
 
     @Test
     public void createAndDeleteObject() throws SQLException {
-        MObject object = new MObject("test_object");
+        MObject object = new MObject("test_object", owner);
 
         assertEquals(1, daoObject.create(object));
         List<MObject> toDel = daoObject.queryForMatching(object);
@@ -108,7 +108,7 @@ public class ModelTest {
     @Test
     public void createAccessRecord() throws SQLException {
         User user = new User("test", "test_account", "test_password");
-        MObject object = new MObject("test_object2");
+        MObject object = new MObject("test_object2", user);
 
 
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {

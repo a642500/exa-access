@@ -115,7 +115,7 @@ public class CenterSceneController implements Initializable {
                 dialog.setHeaderText("Please input the path!");
                 ae.consume();
             } else try {
-                if (!getMObjectDao().queryForMatching(new MObject(path)).isEmpty()) {
+                if (!getMObjectDao().queryForMatching(new MObject(path, null)).isEmpty()) {
                     shake.accept(textField);
                     dialog.setHeaderText("Object path exist! Try another one.");
                     ae.consume();
@@ -131,7 +131,7 @@ public class CenterSceneController implements Initializable {
         result.ifPresent(s -> {
             try {
                 DatabaseHelper.callInTransaction(() -> {
-                    final MObject o = new MObject(s);
+                    final MObject o = new MObject(s, Main.getLoginUser());
                     getMObjectDao().create(o);
                     //                    final MObject created = getMObjectDao().queryForMatching(o).get(0);
                     return null;

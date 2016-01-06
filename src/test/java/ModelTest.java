@@ -23,6 +23,7 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.sun.istack.internal.NotNull;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.AccessType;
@@ -45,11 +46,29 @@ import static org.junit.Assert.assertEquals;
 @RunWith(value = JUnit4.class)
 public class ModelTest {
     public static final String URL = "jdbc:mysql:///access_exp?user=root";
+    public static final String TEST_USERNAME = "test";
+    public static final String TEST_PASSWORD = "test_password";
+    public static final String TEST_OBJECT_PATH = "test_object_path";
     private ConnectionSource mConnectionSource;
     private DatabaseType mDatabaseType;
     private Dao<User, Integer> daoUser;
     private Dao<MObject, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
+
+    @Test
+    public void init() throws SQLException {
+        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
+        createInitAccount();
+    }
+
+    @Test
+    public void clean() throws SQLException {
+        TableUtils.dropTable(mConnectionSource, User.class, false);
+        TableUtils.dropTable(mConnectionSource, MObject.class, false);
+        TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+    }
 
     @Before
     public void setUp() throws SQLException {
@@ -60,56 +79,75 @@ public class ModelTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        daoUser = DatabaseHelper.open(User.class);
-        daoObject = DatabaseHelper.open(MObject.class);
-        daoAccess = DatabaseHelper.open(AccessRecord.class);
-    }
-
-    @Test
-    public void init() throws SQLException {
-        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
-        createInitAccount();
+        daoUser = DatabaseHelper.getUserDao();
+        daoObject = DatabaseHelper.getMObjectDao();
+        daoAccess = DatabaseHelper.getAccessRecordDao();
     }
 
     private void createInitAccount() throws SQLException {
-        User user = new User("admin", "admin", "admin");
-        DatabaseHelper.open(User.class).createIfNotExists(user);
+        User user = new User("admin", "admin");
+        DatabaseHelper.getUserDao().createIfNotExists(user);
     }
 
-    @Test
-    public void clean() throws SQLException {
-        TableUtils.dropTable(mConnectionSource, User.class, false);
-        TableUtils.dropTable(mConnectionSource, MObject.class, false);
-        TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+    private User testUser() {
+        return new User(TEST_USERNAME, TEST_PASSWORD);
+    }
+
+    private User findUserInDatabase(User user) throws SQLException {
+        return DatabaseHelper.getUserDao().queryForMatching(testUser()).get(0);
     }
 
     @Test
     public void testCreateAndDeleteUser() throws SQLException {
-        User user = new User("test", "test_account", "test_password");
+        final User user = testUser();
+        createUser(user);
 
+        final User created = findUserInDatabase(user);
+        deleteUser(created);
+    }
+
+    private void createUser(User user) throws SQLException {
         assertEquals(1, daoUser.create(user));
-        List<User> toDeletes = daoUser.queryForMatching(user);
-        assertEquals(1, toDeletes.size());
-        assertEquals(1, daoUser.delete(toDeletes.get(0)));
+    }
+
+    private void deleteUser(User user) throws SQLException {
+        assertEquals(1, daoUser.delete(user));
     }
 
     @Test
     public void createAndDeleteObject() throws SQLException {
-        MObject object = new MObject("test_object", owner);
+        createUser(testUser());
+        final User user = findUserInDatabase(testUser());
 
+        final MObject object = testObject(user);
+        createObject(object);
+        final MObject objectCreated = findObjectInDataBase(object);
+        deleteObject(objectCreated);
+    }
+
+    private MObject testObject(@NotNull User own) {
+        return new MObject(TEST_OBJECT_PATH, own);
+    }
+
+    private void createObject(MObject object) throws SQLException {
         assertEquals(1, daoObject.create(object));
-        List<MObject> toDel = daoObject.queryForMatching(object);
-        assertEquals(1, toDel.size());
-        assertEquals(1, daoObject.delete(toDel.get(0)));
+    }
+
+    private MObject findObjectInDataBase(MObject object) throws SQLException {
+        return daoObject.queryForMatching(object).get(0);
+    }
+
+    private void deleteObject(MObject object) throws SQLException {
+        assertEquals(1, daoObject.delete(object));
     }
 
     @Test
     public void createAccessRecord() throws SQLException {
-        User user = new User("test", "test_account", "test_password");
-        MObject object = new MObject("test_object2", user);
+        createUser(testUser());
+        final User user = findUserInDatabase(testUser());
 
+        createObject(testObject(user));
+        final MObject object = findObjectInDataBase(testObject(user));
 
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
             daoUser.create(user);

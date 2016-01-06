@@ -20,6 +20,7 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
@@ -34,6 +35,9 @@ import java.sql.SQLException;
  */
 @RunWith(value = JUnit4.class)
 public class CleanDatabase {
+    public static final String TEST_USER_PREFIX = "test_user_";
+    public static final String TEST_USRE_PASSWORD_PREFIX = TEST_USER_PREFIX + "password_";
+    public static final int TEST_USER_NUM = 4;
 
     @Test
     public void clean() throws SQLException {
@@ -42,5 +46,14 @@ public class CleanDatabase {
         TableUtils.dropTable(mConnectionSource, User.class, false);
         TableUtils.dropTable(mConnectionSource, MObject.class, false);
         TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+    }
+
+    @Test
+    public void createTestEnvironment() throws SQLException {
+        final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
+
+        for (int i = 0; i < TEST_USER_NUM; i++) {
+            DatabaseHelper.getUserDao().create(new User(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i));
+        }
     }
 }

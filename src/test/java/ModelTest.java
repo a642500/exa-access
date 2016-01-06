@@ -75,16 +75,16 @@ public class ModelTest {
         daoAccess = DatabaseHelper.getAccessRecordDao();
     }
 
-    private void createInitAccount() throws SQLException {
+    void createInitAccount() throws SQLException {
         User user = new User("admin", "admin");
         DatabaseHelper.getUserDao().createIfNotExists(user);
     }
 
-    private User testUser() {
+    User testUser() {
         return new User(TEST_USERNAME, TEST_PASSWORD);
     }
 
-    private User findUserInDatabase(User user) throws SQLException {
+    User findUserInDatabase(User user) throws SQLException {
         return DatabaseHelper.getUserDao().queryForMatching(testUser()).get(0);
     }
 
@@ -97,11 +97,11 @@ public class ModelTest {
         deleteUser(created);
     }
 
-    private void createUser(User user) throws SQLException {
+    void createUser(User user) throws SQLException {
         assertEquals(1, daoUser.create(user));
     }
 
-    private void deleteUser(User user) throws SQLException {
+    void deleteUser(User user) throws SQLException {
         assertEquals(1, daoUser.delete(user));
     }
 
@@ -116,19 +116,19 @@ public class ModelTest {
         deleteObject(objectCreated);
     }
 
-    private MObject testObject(@NotNull User own) {
+    MObject testObject(@NotNull User own) {
         return new MObject(TEST_OBJECT_PATH, own);
     }
 
-    private void createObject(MObject object) throws SQLException {
+    void createObject(MObject object) throws SQLException {
         assertEquals(1, daoObject.create(object));
     }
 
-    private MObject findObjectInDataBase(MObject object) throws SQLException {
+    MObject findObjectInDataBase(MObject object) throws SQLException {
         return daoObject.queryForMatching(object).get(0);
     }
 
-    private void deleteObject(MObject object) throws SQLException {
+    void deleteObject(MObject object) throws SQLException {
         assertEquals(1, daoObject.delete(object));
     }
 

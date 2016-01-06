@@ -23,12 +23,14 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
 
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Carlos on 1/4/16.
@@ -40,6 +42,10 @@ public class DatabaseHelper {
     private static Dao<MObject, Integer> mMObjectDao;
     private static Dao<AccessRecord, Integer> mAccessRecordDao;
     private static Dao<User, Integer> mUserDao;
+
+    public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
+        return TransactionManager.callInTransaction(mConnectionSource, callable);
+    }
 
     private static void init() throws SQLException {
         mDatabaseType = new MysqlDatabaseType();

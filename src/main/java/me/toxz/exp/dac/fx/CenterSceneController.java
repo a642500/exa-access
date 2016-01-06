@@ -38,6 +38,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static me.toxz.exp.dac.data.DatabaseHelper.getMObjectDao;
+
 /**
  * Created by Carlos on 1/5/16.
  */
@@ -60,7 +62,7 @@ public class CenterSceneController implements Initializable {
 
     private void setUpTree() throws SQLException {
         DatabaseHelper.getUserDao().queryForAll().stream().map((Function<User, TreeItem<Ject>>) TreeItem::new).forEach(subjectTreeItem.getChildren()::add);
-        DatabaseHelper.getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
+        getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
 
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateTable(newValue.getValue()));
     }
@@ -113,7 +115,7 @@ public class CenterSceneController implements Initializable {
                 dialog.setHeaderText("Please input the path!");
                 ae.consume();
             } else try {
-                if (!DatabaseHelper.getMObjectDao().queryForMatching(new MObject(path)).isEmpty()) {
+                if (!getMObjectDao().queryForMatching(new MObject(path)).isEmpty()) {
                     shake.accept(textField);
                     dialog.setHeaderText("Object path exist! Try another one.");
                     ae.consume();
@@ -128,7 +130,12 @@ public class CenterSceneController implements Initializable {
 
         result.ifPresent(s -> {
             try {
-                DatabaseHelper.getMObjectDao().create(new MObject(s));
+                DatabaseHelper.callInTransaction(() -> {
+                    final MObject o = new MObject(s);
+                    getMObjectDao().create(o);
+                    //                    final MObject created = getMObjectDao().queryForMatching(o).get(0);
+                    return null;
+                });
                 //TODO refresh table
             } catch (SQLException e) {
                 e.printStackTrace();

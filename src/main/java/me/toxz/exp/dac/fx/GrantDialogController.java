@@ -18,6 +18,7 @@
 
 package me.toxz.exp.dac.fx;
 
+import com.j256.ormlite.dao.Dao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +38,6 @@ import me.toxz.exp.dac.data.model.User;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -80,13 +80,24 @@ public class GrantDialogController implements Initializable {
             User user = Main.getLoginUser();
             userComboBox.getItems().addAll(DatabaseHelper.getUserDao().queryForAll());
             userComboBox.getSelectionModel().select(0);
-            List<AccessRecord> controllable = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(user, null, AccessType.CONTROL));
+
+            final Dao<AccessRecord, Integer> accessRecordDao = DatabaseHelper.getAccessRecordDao();
+            List<AccessRecord> controllable = accessRecordDao.queryForMatching(new AccessRecord(user, null, AccessType.CONTROL));
             objectComboBox.getItems().addAll(controllable.stream().map(AccessRecord::getObject).collect(Collectors.toList()));
-            objectComboBox.getSelectionModel().select(0);
-            List<AccessType> types = Arrays.stream(AccessType.values()).collect(Collectors.toList());
-            types.remove(AccessType.CONTROL);//TODO type1: center
-            permissionChoiceBox.getItems().addAll(types);
-            permissionChoiceBox.getSelectionModel().select(0);
+
+            objectComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                try {
+                    List<AccessRecord> records = accessRecordDao.queryForMatching(new AccessRecord(user, newValue, null));
+                    List<AccessType> types = records.stream().map(AccessRecord::getAccessType).collect(Collectors.toList());
+                    types.remove(AccessType.CONTROL);//TODO type1: center
+                    //TODO grant repeat.  for example: A has R,C for o, A grant A as R for o. Then two same record in AccessRecord
+
+                    permissionChoiceBox.getItems().addAll(types);
+                    permissionChoiceBox.getSelectionModel().select(0);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -21,10 +21,7 @@ package me.toxz.exp.dac.fx;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.*;
 
@@ -32,6 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -88,5 +86,16 @@ public class CenterSceneController implements Initializable {
 
     public void onRevoke(ActionEvent actionEvent) {
 
+    }
+
+    public void onCreateObject(ActionEvent actionEvent) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("New object");
+        dialog.setContentText("Object path");
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(s -> {
+            
+        });
     }
 }

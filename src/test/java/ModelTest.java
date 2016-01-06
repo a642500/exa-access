@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(value = JUnit4.class)
 public class ModelTest {
-    public static final String URL = "jdbc:mysql:///access_exp?user=root";
+    public static final String URL = DatabaseHelper.URL;
     public static final String TEST_USERNAME = "test";
     public static final String TEST_PASSWORD = "test_password";
     public static final String TEST_OBJECT_PATH = "test_object_path";
@@ -55,19 +55,11 @@ public class ModelTest {
     private Dao<MObject, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
 
-    @Test
-    public void init() throws SQLException {
+    private void init() throws SQLException {
         TableUtils.createTableIfNotExists(mConnectionSource, User.class);
         TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
         TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
         createInitAccount();
-    }
-
-    @Test
-    public void clean() throws SQLException {
-        TableUtils.dropTable(mConnectionSource, User.class, false);
-        TableUtils.dropTable(mConnectionSource, MObject.class, false);
-        TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
     }
 
     @Before
@@ -76,8 +68,7 @@ public class ModelTest {
         mConnectionSource = new JdbcConnectionSource(URL, mDatabaseType);
         try {
             init();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         }
         daoUser = DatabaseHelper.getUserDao();
         daoObject = DatabaseHelper.getMObjectDao();
@@ -143,25 +134,26 @@ public class ModelTest {
 
     @Test
     public void createAccessRecord() throws SQLException {
-        createUser(testUser());
-        final User user = findUserInDatabase(testUser());
-
-        createObject(testObject(user));
-        final MObject object = findObjectInDataBase(testObject(user));
-
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
-            daoUser.create(user);
-            User userCreated = daoUser.queryForMatching(user).get(0);
-            daoObject.create(object);
-            MObject objectCreated = daoObject.queryForMatching(object).get(0);
+            createUser(testUser());
+            final User user = findUserInDatabase(testUser());
 
-            AccessRecord access = new AccessRecord(userCreated, objectCreated, AccessType.WRITE);
+            createObject(testObject(user));
+            final MObject object = findObjectInDataBase(testObject(user));
+
+            AccessRecord access = new AccessRecord(user, object, AccessType.WRITE);
 
             assertEquals(1, daoAccess.create(access));
             List<AccessRecord> accessRecords = daoAccess.queryForMatching(access);
             assertEquals(1, accessRecords.size());
 
+            assertEquals(1, daoAccess.delete(accessRecords));
+
+            deleteObject(object);
+            deleteUser(user);
             return null;
         });
+
+
     }
 }

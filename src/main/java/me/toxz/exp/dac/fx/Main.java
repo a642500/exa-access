@@ -63,9 +63,13 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private Scene getFirstScene() throws IOException {
+    private Scene getFirstScene() throws IOException, SQLException {
         //        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
         //        return new Scene(root, 400, 300);
+        //TODO just for test, auto login by admin
+        final User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", "admin").queryForFirst();
+
+        setLoginUser(user);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
         return new Scene(root, 1200, 800);
     }

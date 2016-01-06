@@ -18,7 +18,7 @@
 
 package me.toxz.exp.dac.fx;
 
-import com.sun.istack.internal.Nullable;
+import com.sun.istack.internal.NotNull;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,6 +39,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static me.toxz.exp.dac.data.DatabaseHelper.getMObjectDao;
+import static me.toxz.exp.dac.data.DatabaseHelper.getUserDao;
 
 /**
  * Created by Carlos on 1/5/16.
@@ -50,27 +51,34 @@ public class CenterSceneController implements Initializable {
     @FXML TableColumn<Access, User> subjectColumn;
     @FXML TreeView<Ject> treeView;
 
+    private Ject mCurrentJect;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
             setUpTree();
-            updateTable(null);
+            refreshTree();
+            mCurrentJect = Main.getLoginUser();
+            refreshTable(mCurrentJect);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void setUpTree() throws SQLException {
-        DatabaseHelper.getUserDao().queryForAll().stream().map((Function<User, TreeItem<Ject>>) TreeItem::new).forEach(subjectTreeItem.getChildren()::add);
-        getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).forEach(objectTreeItem.getChildren()::add);
+    private void refreshTree() throws SQLException {
+        List<TreeItem<Ject>> userItems = getUserDao().queryForAll().stream().map((Function<User, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
+        List<TreeItem<Ject>> objectItems = getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
 
-        treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateTable(newValue.getValue()));
+        subjectTreeItem.getChildren().setAll(userItems);
+        objectTreeItem.getChildren().setAll(objectItems);
     }
 
-    private void updateTable(@Nullable Ject ject) {
-        if (ject == null) {
-            ject = Main.getLoginUser();
-        }
+    private void setUpTree() throws SQLException {
+        treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> refreshTable(newValue.getValue()));
+    }
+
+    private void refreshTable(@NotNull final Ject ject) {
         AccessRecord match;
         if (ject instanceof User) match = new AccessRecord(((User) ject), null, null);
         else if (ject instanceof MObject) match = new AccessRecord(null, ((MObject) ject), null);
@@ -88,7 +96,12 @@ public class CenterSceneController implements Initializable {
     }
 
     public void onGrant(ActionEvent actionEvent) throws IOException {
-        GrantDialogController.show();
+        GrantDialogController.show(accessRecord -> {
+            if (accessRecord != null) {
+                if (accessRecord.getSubject().equals(mCurrentJect) || accessRecord.getObject().equals(mCurrentJect))
+                    refreshTable(mCurrentJect);
+            }
+        });
     }
 
     public void onRevoke(ActionEvent actionEvent) {
@@ -136,6 +149,8 @@ public class CenterSceneController implements Initializable {
                     //                    final MObject created = getMObjectDao().queryForMatching(o).get(0);
                     return null;
                 });
+                refreshTree();
+                refreshTable(mCurrentJect);
                 //TODO refresh table
             } catch (SQLException e) {
                 e.printStackTrace();

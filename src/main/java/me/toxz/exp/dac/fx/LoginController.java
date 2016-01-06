@@ -18,7 +18,6 @@
 
 package me.toxz.exp.dac.fx;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,7 +48,6 @@ public class LoginController extends AnchorPane implements Initializable {
     Button login;
     @FXML
     Label errorMessage;
-    Application mApp;
 
     private void goToMainScene() throws IOException {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));

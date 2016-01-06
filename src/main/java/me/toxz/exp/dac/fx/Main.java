@@ -24,9 +24,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.AccessType;
-import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
 
 import java.io.IOException;
@@ -50,11 +47,6 @@ public class Main extends Application {
         mUser = user;
     }
 
-    private void authenticate(User subject, AccessType type, MObject object) throws SQLException {
-        AccessRecord accessRecord = new AccessRecord(subject, object, type);
-        DatabaseHelper.getAccessRecordDao().create(accessRecord);
-    }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         mPrimaryStage = primaryStage;
@@ -72,10 +64,6 @@ public class Main extends Application {
         setLoginUser(user);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
         return new Scene(root, 1200, 800);
-    }
-
-    private void revoke(AccessRecord record) throws SQLException {
-        DatabaseHelper.getAccessRecordDao().delete(record);
     }
 }
 

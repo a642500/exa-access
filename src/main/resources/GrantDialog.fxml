@@ -59,7 +59,7 @@
         <Label text="Object" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
         <ComboBox fx:id="objectComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
         <ChoiceBox fx:id="permissionChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-        <Label text="Grant" GridPane.columnIndex="1"/>
+        <Label text="Grant" fx:id="headLabel" GridPane.columnIndex="1"/>
     </children>
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity"/>

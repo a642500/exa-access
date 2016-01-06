@@ -27,6 +27,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import me.toxz.exp.dac.data.DatabaseHelper;
@@ -34,6 +35,7 @@ import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.AccessType;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.dac.fx.animation.ShakeTransition;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,6 +54,7 @@ public class GrantDialogController implements Initializable {
     @FXML ComboBox<User> userComboBox;
     @FXML ComboBox<MObject> objectComboBox;
     @FXML ChoiceBox<AccessType> permissionChoiceBox;
+    @FXML Label headLabel;
 
     public static void show(Consumer<AccessRecord> resultCallback) throws IOException {
         mResultCallback = resultCallback;
@@ -116,9 +119,17 @@ public class GrantDialogController implements Initializable {
         AccessRecord record = new AccessRecord(user, object, type, Main.getLoginUser());
 
         try {
-            DatabaseHelper.getAccessRecordDao().create(record);//TODO if record exist
+            List<AccessRecord> accessRecords = DatabaseHelper.getAccessRecordDao().queryForMatching(record);
 
-            dismiss(record);
+            if (accessRecords.size() > 0) {
+                //TODO add error label
+                headLabel.setText("Repeat grant!");
+                new ShakeTransition(mStage.getScene().getRoot(), event -> {
+                }).playFromStart();
+            } else {
+                DatabaseHelper.getAccessRecordDao().create(record);
+                dismiss(record);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

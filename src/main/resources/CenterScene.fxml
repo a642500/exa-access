@@ -77,6 +77,11 @@
                                         <PropertyValueFactory property="objectPath"/>
                                     </cellValueFactory>
                                 </TableColumn>
+                                <TableColumn prefWidth="75.0" text="Permission">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="permissions"/>
+                                    </cellValueFactory>
+                                </TableColumn>
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

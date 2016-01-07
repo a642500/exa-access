@@ -21,20 +21,25 @@ package me.toxz.exp.dac.data.model;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Carlos on 1/5/16.
  */
 public class Access {
     private List<AccessRecord> mRecordList;
+    private Map<AccessType, List<AccessRecord>> mGrantList;
     private SimpleStringProperty username;
     private SimpleStringProperty objectPath;
-    private AccessType[] mPermissions;
+    private SimpleStringProperty permissions;
 
     public Access(List<AccessRecord> mRecordList) {
         AccessRecord record = mRecordList.get(0);
         username = new SimpleStringProperty(record.getSubject().getUsername());
         objectPath = new SimpleStringProperty(record.getObject().getPath());
+        mGrantList = mRecordList.stream().collect(Collectors.groupingBy(AccessRecord::getAccessType));
+        permissions = new SimpleStringProperty(mGrantList.keySet().stream().map(Enum::toString).collect(Collectors.joining(",")));
     }
 
     public List<AccessRecord> getmRecordList() {
@@ -69,11 +74,15 @@ public class Access {
         return objectPath;
     }
 
-    public AccessType[] getmPermissions() {
-        return mPermissions;
+    public Map<AccessType, List<AccessRecord>> getmGrantList() {
+        return mGrantList;
     }
 
-    public void setmPermissions(AccessType[] mPermissions) {
-        this.mPermissions = mPermissions;
+    public String getPermissions() {
+        return permissions.get();
+    }
+
+    public SimpleStringProperty permissionsProperty() {
+        return permissions;
     }
 }

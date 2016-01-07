@@ -29,17 +29,18 @@ import java.util.stream.Collectors;
  */
 public class Access {
     private List<AccessRecord> mRecordList;
-    private Map<AccessType, List<AccessRecord>> mGrantList;
     private SimpleStringProperty username;
     private SimpleStringProperty objectPath;
     private SimpleStringProperty permissions;
+    private List<Grant> grants;
 
     public Access(List<AccessRecord> mRecordList) {
         AccessRecord record = mRecordList.get(0);
         username = new SimpleStringProperty(record.getSubject().getUsername());
         objectPath = new SimpleStringProperty(record.getObject().getPath());
-        mGrantList = mRecordList.stream().collect(Collectors.groupingBy(AccessRecord::getAccessType));
-        permissions = new SimpleStringProperty(mGrantList.keySet().stream().map(Enum::toString).collect(Collectors.joining(",")));
+        Map<AccessType, List<AccessRecord>> grantList = mRecordList.stream().collect(Collectors.groupingBy(AccessRecord::getAccessType));
+        permissions = new SimpleStringProperty(grantList.keySet().stream().map(Enum::toString).collect(Collectors.joining(",")));
+        grants = grantList.entrySet().stream().map(accessTypeListEntry -> new Grant(accessTypeListEntry.getKey(), accessTypeListEntry.getValue())).collect(Collectors.toList());
     }
 
     public List<AccessRecord> getmRecordList() {
@@ -74,15 +75,15 @@ public class Access {
         return objectPath;
     }
 
-    public Map<AccessType, List<AccessRecord>> getmGrantList() {
-        return mGrantList;
-    }
-
     public String getPermissions() {
         return permissions.get();
     }
 
     public SimpleStringProperty permissionsProperty() {
         return permissions;
+    }
+
+    public List<Grant> getGrants() {
+        return grants;
     }
 }

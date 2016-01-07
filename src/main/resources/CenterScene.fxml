@@ -19,7 +19,7 @@
   -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.Color?>
@@ -95,10 +95,14 @@
                         </Label>
                         <TableView fx:id="detailTableView" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="detailPermissionColumn" prefWidth="75.0" text="Permission"/>
+                                <TableColumn fx:id="detailPermissionColumn" prefWidth="75.0" text="Permission">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="accessType"/>
+                                    </cellValueFactory>
+                                </TableColumn>
                                 <TableColumn fx:id="grantedByColumn" prefWidth="75.0" text="Granted By">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="grantedUser"/>
+                                        <PropertyValueFactory property="grantedUsersName"/>
                                     </cellValueFactory>
                                 </TableColumn>
                             </columns>

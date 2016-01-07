@@ -60,9 +60,9 @@ public class CenterSceneController implements Initializable {
     @FXML TableColumn<Access, MObject> objectColumn;
     @FXML TableColumn<Access, String> permissionColumn;
 
-    @FXML TableView<AccessRecord> detailTableView;
-    @FXML TableColumn<Access, AccessType> detailPermissionColumn;
-    @FXML TableColumn<Access, User> grantedByColumn;
+    @FXML TableView<Grant> detailTableView;
+    @FXML TableColumn<Grant, AccessType> detailPermissionColumn;
+    @FXML TableColumn<Grant, String> grantedByColumn;
     private Ject mCurrentJect;
 
 
@@ -84,6 +84,17 @@ public class CenterSceneController implements Initializable {
         subjectColumn.prefWidthProperty().bind(tableView.widthProperty().divide(4));
         objectColumn.prefWidthProperty().bind(tableView.widthProperty().divide(4));
         permissionColumn.prefWidthProperty().bind(tableView.widthProperty().divide(2));
+
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                detailTableView.getItems().clear();
+            } else {
+                List<Grant> detail = newValue.getGrants();
+                detailTableView.getItems().setAll(detail);
+            }
+
+
+        });
 
 
         detailPermissionColumn.prefWidthProperty().bind(detailTableView.widthProperty().divide(4));

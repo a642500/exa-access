@@ -54,7 +54,7 @@ public class CenterSceneController implements Initializable {
     @FXML TableView<Access> tableView;
     @FXML TableColumn<Access, User> subjectColumn;
     @FXML TreeView<Ject> treeView;
-
+    @FXML Label leftStatus;
     private Ject mCurrentJect;
 
 
@@ -65,6 +65,7 @@ public class CenterSceneController implements Initializable {
             refreshTree();
             mCurrentJect = Main.getLoginUser();
             refreshTable(mCurrentJect);
+            leftStatus.setText(String.format("Current User: %s", mCurrentJect.toString()));
         } catch (SQLException e) {
             e.printStackTrace();
         }

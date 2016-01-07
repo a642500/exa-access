@@ -51,10 +51,18 @@ import static me.toxz.exp.dac.data.model.User.admin;
 public class CenterSceneController implements Initializable {
     @FXML TreeItem<Ject> subjectTreeItem;
     @FXML TreeItem<Ject> objectTreeItem;
-    @FXML TableView<Access> tableView;
-    @FXML TableColumn<Access, User> subjectColumn;
+
     @FXML TreeView<Ject> treeView;
     @FXML Label leftStatus;
+
+    @FXML TableView<Access> tableView;
+    @FXML TableColumn<Access, User> subjectColumn;
+    @FXML TableColumn<Access, MObject> objectColumn;
+    @FXML TableColumn<Access, String> permissionColumn;
+
+    @FXML TableView<AccessRecord> detailTableView;
+    @FXML TableColumn<Access, AccessType> detailPermissionColumn;
+    @FXML TableColumn<Access, User> grantedByColumn;
     private Ject mCurrentJect;
 
 
@@ -64,11 +72,22 @@ public class CenterSceneController implements Initializable {
             setUpTree();
             refreshTree();
             mCurrentJect = Main.getLoginUser();
+            setUpTable();
             refreshTable(mCurrentJect);
             leftStatus.setText(String.format("Current User: %s", mCurrentJect.toString()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setUpTable() {
+        subjectColumn.prefWidthProperty().bind(tableView.widthProperty().divide(4));
+        objectColumn.prefWidthProperty().bind(tableView.widthProperty().divide(4));
+        permissionColumn.prefWidthProperty().bind(tableView.widthProperty().divide(2));
+
+
+        detailPermissionColumn.prefWidthProperty().bind(detailTableView.widthProperty().divide(4));
+        grantedByColumn.prefWidthProperty().bind(detailTableView.widthProperty().multiply(3).divide(4));
     }
 
     private void refreshTree() throws SQLException {

@@ -31,15 +31,15 @@
             <menus>
                 <Menu mnemonicParsing="true" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="true" text="New Object" onAction="#onCreateObject"/>
+                        <MenuItem mnemonicParsing="true" onAction="#onCreateObject" text="New Object"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem mnemonicParsing="true" text="Quit"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="true" text="Grant" onAction="#onGrant"/>
-                        <MenuItem mnemonicParsing="true" text="Revoke" onAction="#onRevoke"/>
+                        <MenuItem mnemonicParsing="true" onAction="#onGrant" text="Grant"/>
+                        <MenuItem mnemonicParsing="true" onAction="#onRevoke" text="Revoke"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
                     </items>
                 </Menu>
@@ -50,8 +50,8 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0"
-                   prefWidth="-1.0" VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.25, 0.8" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0"
+                   VBox.vgrow="ALWAYS">
             <items>
                 <TreeView fx:id="treeView">
                     <root>
@@ -67,39 +67,49 @@
                     <content>
                         <TableView fx:id="tableView">
                             <columns>
-                                <TableColumn prefWidth="75.0" text="Subject" fx:id="subjectColumn">
+                                <TableColumn fx:id="subjectColumn" prefWidth="75.0" text="Subject">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="username"/>
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Object">
+                                <TableColumn fx:id="objectColumn" prefWidth="75.0" text="Object">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="objectPath"/>
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Permission">
+                                <TableColumn fx:id="permissionColumn" prefWidth="75.0" text="Permission">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="permissions"/>
                                     </cellValueFactory>
                                 </TableColumn>
                             </columns>
-                            <columnResizePolicy>
-                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                            </columnResizePolicy>
                         </TableView>
                     </content>
                 </ScrollPane>
-                <AnchorPane>
+                <VBox>
                     <children>
-                        <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details"
-                               textAlignment="CENTER" wrapText="false"/>
+                        <Label text="Detail">
+                            <padding>
+                                <Insets bottom="4.0" left="8.0" right="8.0" top="8.0"/>
+                            </padding>
+                        </Label>
+                        <TableView fx:id="detailTableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="detailPermissionColumn" prefWidth="75.0" text="Permission"/>
+                                <TableColumn fx:id="grantedByColumn" prefWidth="75.0" text="Granted By">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="grantedUser"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                            </columns>
+                        </TableView>
                     </children>
-                </AnchorPane>
+                </VBox>
             </items>
         </SplitPane>
         <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
             <children>
-                <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" fx:id="leftStatus"
+                <Label fx:id="leftStatus" maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status"
                        HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="11.0" fx:id="x3"/>

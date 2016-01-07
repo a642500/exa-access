@@ -20,7 +20,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" styleClass="background"
@@ -64,7 +63,4 @@
             </children>
         </HBox>
     </children>
-    <stylesheets>
-        <URL value="@Login.css"/>
-    </stylesheets>
 </AnchorPane>

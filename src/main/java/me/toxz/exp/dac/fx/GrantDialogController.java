@@ -81,7 +81,10 @@ public class GrantDialogController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             User user = Main.getLoginUser();
-            userComboBox.getItems().addAll(DatabaseHelper.getUserDao().queryForAll());
+            List<User> grantable = DatabaseHelper.getUserDao().queryForAll();
+            grantable.remove(User.admin());
+            grantable.remove(user);
+            userComboBox.getItems().addAll(grantable);
             userComboBox.getSelectionModel().select(0);
 
             final Dao<AccessRecord, Integer> accessRecordDao = DatabaseHelper.getAccessRecordDao();
@@ -125,12 +128,35 @@ public class GrantDialogController implements Initializable {
                 headLabel.setText("Repeat grant!");
                 new ShakeTransition(mStage.getScene().getRoot(), event -> {
                 }).playFromStart();
+
+                //TODO check circle
+            } else if (checkCircle(record)) {
+                headLabel.setText("Circular grant!");
+                new ShakeTransition(mStage.getScene().getRoot(), event -> {
+                }).playFromStart();
             } else {
                 DatabaseHelper.getAccessRecordDao().create(record);
                 dismiss(record);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean checkCircle(AccessRecord access) throws SQLException {
+        final User target = access.getSubject();
+        final MObject object = access.getObject();
+        final User origin = access.getGrantedUser();
+        final AccessType type = access.getAccessType();
+
+        if (target.equals(origin)) {
+            return true;
+        } else {
+            List<AccessRecord> parent = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(origin, object, type, null));
+            for (AccessRecord record : parent) {
+                if (checkCircle(record)) return true;
+            }
+            return false;
         }
     }
 }

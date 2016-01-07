@@ -122,7 +122,6 @@ public class GrantDialogController implements Initializable {
             List<AccessRecord> accessRecords = DatabaseHelper.getAccessRecordDao().queryForMatching(record);
 
             if (accessRecords.size() > 0) {
-                //TODO add error label
                 headLabel.setText("Repeat grant!");
                 new ShakeTransition(mStage.getScene().getRoot(), event -> {
                 }).playFromStart();

@@ -24,10 +24,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.User;
@@ -48,6 +46,7 @@ public class LoginController extends AnchorPane implements Initializable {
     Button login;
     @FXML
     Label errorMessage;
+    @FXML ImageView imageView;
 
     private void goToMainScene() throws IOException {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
@@ -56,7 +55,6 @@ public class LoginController extends AnchorPane implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     public void processLogin(ActionEvent event) throws Exception {
@@ -78,4 +76,11 @@ public class LoginController extends AnchorPane implements Initializable {
         }
     }
 
+    public void processSignUp(ActionEvent actionEvent) {
+        Dialog<User> signUpDialog = new Dialog<>();
+
+        DialogPane pane = signUpDialog.getDialogPane();
+
+
+    }
 }

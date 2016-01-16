@@ -1,10 +1,12 @@
 package me.toxz.exp.rbac;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Carlos on 2016/1/16.
  */
+@DatabaseTable
 public class User {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true) private String username;

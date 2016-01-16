@@ -27,4 +27,5 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.38'
     compile 'org.controlsfx:controlsfx:8.40.10'
     compile 'com.google.guava:guava:19.0'
+    compile 'com.google.code.gson:gson:2.4'
 }

@@ -17,6 +17,9 @@ public class CanRevokep {
     @DatabaseField(persisterClass = RoleRangeType.class)
     private Range<Role> range;
 
+    private CanRevokep() {
+    }
+
     public CanRevokep(Role operator, Range<Role> range) {
         this.operator = operator;
         this.range = range;

@@ -22,6 +22,9 @@ public class CanRevoke {
         this.range = range;
     }
 
+    private CanRevoke() {
+    }
+
     public Role getOperator() {
         return operator;
     }

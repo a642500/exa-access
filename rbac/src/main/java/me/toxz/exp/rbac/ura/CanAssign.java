@@ -22,6 +22,9 @@ public class CanAssign {
     @DatabaseField(persisterClass = RoleRangeType.class)
     private Range<Role> range;
 
+    private CanAssign() {
+    }
+
     public CanAssign(Condition condition, Role operator, Range<Role> range) {
         this.condition = condition;
         this.operator = operator;

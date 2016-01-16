@@ -16,6 +16,9 @@ public class RoleRecord {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private User user;
 
+    private RoleRecord() {
+    }
+
     public RoleRecord(Role role, User user) {
         this.role = role;
         this.user = user;

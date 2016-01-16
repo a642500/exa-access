@@ -15,13 +15,15 @@ public class ExtendRecord {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private Role roleChild;
 
+    private ExtendRecord() {
+    }
+
     public ExtendRecord(Role roleParent, Role roleChild) {
         this.roleParent = roleParent;
         this.roleChild = roleChild;
     }
 
     public Role getRoleParent() {
-
         return roleParent;
     }
 

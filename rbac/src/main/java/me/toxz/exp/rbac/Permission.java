@@ -17,6 +17,9 @@ public class Permission {
         this.type = type;
     }
 
+    private Permission() {
+    }
+
     public Object getObject() {
         return object;
     }

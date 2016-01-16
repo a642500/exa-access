@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.rbac.fx;
+package me.toxz.exp.ui;
 
 import com.j256.ormlite.dao.Dao;
 import com.sun.istack.internal.NotNull;
@@ -26,11 +26,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.data.DatabaseHelper;
-import me.toxz.exp.rbac.data.model.*;
-import me.toxz.exp.rbac.fx.animation.ShakeTransition;
-import me.toxz.exp.rbac.fx.bean.Access;
-import me.toxz.exp.rbac.fx.bean.Grant;
+import me.toxz.exp.rbac.data.model.AccessRecord;
+import me.toxz.exp.rbac.data.model.AccessType;
+import me.toxz.exp.rbac.data.model.Ject;
+import me.toxz.exp.rbac.data.model.MObject;
+import me.toxz.exp.ui.animation.ShakeTransition;
+import me.toxz.exp.ui.bean.Access;
+import me.toxz.exp.ui.bean.Grant;
 import org.controlsfx.control.CheckListView;
 
 import java.io.IOException;

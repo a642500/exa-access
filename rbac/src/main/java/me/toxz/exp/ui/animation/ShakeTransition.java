@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.rbac.fx.animation;
+package me.toxz.exp.ui.animation;
 
 import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;

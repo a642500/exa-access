@@ -16,15 +16,15 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.rbac.fx;
+package me.toxz.exp.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.data.DatabaseHelper;
-import me.toxz.exp.rbac.data.model.Role;
 
 import java.io.IOException;
 import java.sql.SQLException;

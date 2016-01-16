@@ -6,6 +6,7 @@ import me.toxz.exp.rbac.Session;
 import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.rh.RH;
+import me.toxz.exp.rbac.ua.UA;
 
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -33,7 +34,8 @@ public class URA {
 
     public static boolean canWeakRevoke(Session session, User target, Role role) throws SQLException {
         //TODO judge whether targeted user is explicit member of the role, if not, return false.
-        return canRevoke(session, role);
+        Set<Role> explicatRoles = UA.getAllExplicitRole(target);
+        return explicatRoles.contains(role) && canRevoke(session, role);
     }
 
     public static boolean canStrongRevoke(Session session, User target, Role role) throws SQLException {

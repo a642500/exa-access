@@ -196,7 +196,7 @@ public class CenterSceneController implements Initializable {
         refreshTable(mCurrentJect);
     }
 
-    public void onRemoveTOken(ActionEvent actionEvent) throws SQLException {
+    public void onRemoveToken(ActionEvent actionEvent) throws SQLException {
         Dialog<List<BlackToken>> removeDialog = new Dialog<>();
         removeDialog.setTitle("Remove black token");
         removeDialog.setHeaderText("Please check the token you want to remove");

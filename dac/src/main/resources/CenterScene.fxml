@@ -41,6 +41,7 @@
                         <MenuItem mnemonicParsing="true" onAction="#onGrant" text="Grant"/>
                         <MenuItem mnemonicParsing="true" onAction="#onRevoke" text="Revoke"/>
                         <MenuItem mnemonicParsing="true" onAction="#onGiveBlackToken" text="Black Token"/>
+                        <MenuItem mnemonicParsing="true" onAction="#onRemoveToken" text="Remove Black Token"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
                     </items>
                 </Menu>

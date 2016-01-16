@@ -25,9 +25,13 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
+import me.toxz.exp.rbac.Role;
+import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.model.AccessRecord;
 import me.toxz.exp.rbac.data.model.MObject;
-import me.toxz.exp.rbac.data.model.Role;
+import me.toxz.exp.rbac.ura.CanAssign;
+import me.toxz.exp.rbac.ura.CanRevoke;
+import me.toxz.exp.rbac.ura.Condition;
 
 import java.sql.SQLException;
 import java.util.concurrent.Callable;
@@ -41,7 +45,11 @@ public class DatabaseHelper {
     private static ConnectionSource mConnectionSource;
     private static Dao<MObject, Integer> mMObjectDao;
     private static Dao<AccessRecord, Integer> mAccessRecordDao;
-    private static Dao<Role, Integer> mUserDao;
+    private static Dao<Role, Integer> mRoleDao;
+    private static Dao<User, Integer> mUserDao;
+    private static Dao<CanAssign, Integer> mCanAssignDao;
+    private static Dao<CanRevoke, Integer> mCanRevokeDao;
+    private static Dao<Condition, Integer> mConditionDao;
 
     public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
         return TransactionManager.callInTransaction(mConnectionSource, callable);
@@ -66,11 +74,39 @@ public class DatabaseHelper {
         return mMObjectDao;
     }
 
-    public static Dao<Role, Integer> getUserDao() throws SQLException {
+    public static Dao<Role, Integer> getRoleDao() throws SQLException {
+        if (mRoleDao == null) {
+            mRoleDao = open(Role.class);
+        }
+        return mRoleDao;
+    }
+
+    public static Dao<Condition, Integer> getConditionDao() throws SQLException {
+        if (mConditionDao == null) {
+            mConditionDao = open(Condition.class);
+        }
+        return mConditionDao;
+    }
+
+    public static Dao<User, Integer> getUserDao() throws SQLException {
         if (mUserDao == null) {
-            mUserDao = open(Role.class);
+            mUserDao = open(User.class);
         }
         return mUserDao;
+    }
+
+    public static Dao<CanAssign, Integer> getCanAssignDao() throws SQLException {
+        if (mCanAssignDao == null) {
+            mCanAssignDao = open(CanAssign.class);
+        }
+        return mCanAssignDao;
+    }
+
+    public static Dao<CanRevoke, Integer> getCanRevokeDao() throws SQLException {
+        if (mCanRevokeDao == null) {
+            mCanRevokeDao = open(CanRevoke.class);
+        }
+        return mCanRevokeDao;
     }
 
     private static <T> Dao<T, Integer> open(Class<T> clazz) throws SQLException {

@@ -38,6 +38,10 @@ public class Role implements Ject, Comparable<Role> {
         this.rolename = rolename;
     }
 
+    public int getId() {
+        return _id;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Role && this._id == ((Role) obj)._id;

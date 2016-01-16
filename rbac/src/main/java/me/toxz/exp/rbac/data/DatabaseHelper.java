@@ -27,8 +27,9 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.User;
-import me.toxz.exp.rbac.data.model.AccessRecord;
-import me.toxz.exp.rbac.data.model.MObject;
+import me.toxz.exp.rbac.pra.CanAssignp;
+import me.toxz.exp.rbac.pra.CanRevokep;
+import me.toxz.exp.rbac.pra.Conditionp;
 import me.toxz.exp.rbac.ura.CanAssign;
 import me.toxz.exp.rbac.ura.CanRevoke;
 import me.toxz.exp.rbac.ura.Condition;
@@ -43,13 +44,15 @@ public class DatabaseHelper {
     public static final String URL = "jdbc:mysql://10.111.213.121/access_exp_rbac?user=root&password=9072";
     public static DatabaseType mDatabaseType;
     private static ConnectionSource mConnectionSource;
-    private static Dao<MObject, Integer> mMObjectDao;
-    private static Dao<AccessRecord, Integer> mAccessRecordDao;
+    private static Dao<Object, Integer> mObjectDao;
     private static Dao<Role, Integer> mRoleDao;
     private static Dao<User, Integer> mUserDao;
     private static Dao<CanAssign, Integer> mCanAssignDao;
     private static Dao<CanRevoke, Integer> mCanRevokeDao;
     private static Dao<Condition, Integer> mConditionDao;
+    private static Dao<CanAssignp, Integer> mCanAssignpDao;
+    private static Dao<CanRevokep, Integer> mCanRevokepDao;
+    private static Dao<Conditionp, Integer> mConditionpDao;
 
     public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
         return TransactionManager.callInTransaction(mConnectionSource, callable);
@@ -60,18 +63,11 @@ public class DatabaseHelper {
         mConnectionSource = new JdbcConnectionSource(URL, mDatabaseType);
     }
 
-    public static Dao<AccessRecord, Integer> getAccessRecordDao() throws SQLException {
-        if (mAccessRecordDao == null) {
-            mAccessRecordDao = open(AccessRecord.class);
+    public static Dao<Object, Integer> getObjectDao() throws SQLException {
+        if (mObjectDao == null) {
+            mObjectDao = open(Object.class);
         }
-        return mAccessRecordDao;
-    }
-
-    public static Dao<MObject, Integer> getMObjectDao() throws SQLException {
-        if (mMObjectDao == null) {
-            mMObjectDao = open(MObject.class);
-        }
-        return mMObjectDao;
+        return mObjectDao;
     }
 
     public static Dao<Role, Integer> getRoleDao() throws SQLException {
@@ -81,12 +77,6 @@ public class DatabaseHelper {
         return mRoleDao;
     }
 
-    public static Dao<Condition, Integer> getConditionDao() throws SQLException {
-        if (mConditionDao == null) {
-            mConditionDao = open(Condition.class);
-        }
-        return mConditionDao;
-    }
 
     public static Dao<User, Integer> getUserDao() throws SQLException {
         if (mUserDao == null) {
@@ -107,6 +97,34 @@ public class DatabaseHelper {
             mCanRevokeDao = open(CanRevoke.class);
         }
         return mCanRevokeDao;
+    }
+
+    public static Dao<Condition, Integer> getConditionDao() throws SQLException {
+        if (mConditionDao == null) {
+            mConditionDao = open(Condition.class);
+        }
+        return mConditionDao;
+    }
+
+    public static Dao<CanAssignp, Integer> getCanAssignpDao() throws SQLException {
+        if (mCanAssignpDao == null) {
+            mCanAssignpDao = open(CanAssignp.class);
+        }
+        return mCanAssignpDao;
+    }
+
+    public static Dao<CanRevokep, Integer> getCanRevokepDao() throws SQLException {
+        if (mCanRevokepDao == null) {
+            mCanRevokepDao = open(CanRevokep.class);
+        }
+        return mCanRevokepDao;
+    }
+
+    public static Dao<Conditionp, Integer> getConditionpDao() throws SQLException {
+        if (mConditionpDao == null) {
+            mConditionpDao = open(Conditionp.class);
+        }
+        return mConditionpDao;
     }
 
     private static <T> Dao<T, Integer> open(Class<T> clazz) throws SQLException {

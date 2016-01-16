@@ -5,10 +5,13 @@ import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.Session;
 import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.rh.RH;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Carlos on 2016/1/16.
@@ -19,11 +22,14 @@ public class URA {
     }
 
     @NotNull
-    private static List<CanAssign> queryAllCanAssign(Role role) throws SQLException {
-        //TODO get all can assign by this role and this role's sub
-        List<CanAssign> list = new ArrayList<>();
-        list.addAll(DatabaseHelper.getCanAssignDao().queryForMatching(new CanAssign(null, role, null)));
-        return list;
+    public static Set<CanAssign> queryAllCanAssign(Role role) throws SQLException {
+        // get all can assign by this role and this role's sub
+        final Set<CanAssign> canAssigns = new HashSet<>();
+        final Set<Role> children = RH.getAllChildren(role);
+        for (Role child : children) {
+            canAssigns.addAll(DatabaseHelper.getCanAssignDao().queryForMatching(new CanAssign(null, child, null)));
+        }
+        return canAssigns;
     }
 
     public static boolean canWeakRevoke(Session session, User target, Role role) throws SQLException {
@@ -50,10 +56,13 @@ public class URA {
     }
 
     @NotNull
-    private static List<CanRevoke> queryAllCanRevoke(Role operator) throws SQLException {
-        //TODO get all can revoke by this role and this role's sub
-        List<CanRevoke> list = new ArrayList<>();
-        list.addAll(DatabaseHelper.getCanRevokeDao().queryForMatching(new CanRevoke(operator, null)));
-        return list;
+    public static Set<CanRevoke> queryAllCanRevoke(Role operator) throws SQLException {
+        // get all can revoke by this role and this role's sub
+        final Set<CanRevoke> canRevokes = new HashSet<>();
+        final Set<Role> children = RH.getAllChildren(operator);
+        for (Role child : children) {
+            canRevokes.addAll(DatabaseHelper.getCanRevokeDao().queryForMatching(new CanRevoke(operator, null)));
+        }
+        return canRevokes;
     }
 }

@@ -22,6 +22,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.AccessRecord;
+import me.toxz.exp.dac.data.model.BlackToken;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
 import org.junit.Test;
@@ -46,6 +47,7 @@ public class CleanDatabase {
         TableUtils.dropTable(mConnectionSource, User.class, false);
         TableUtils.dropTable(mConnectionSource, MObject.class, false);
         TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+        TableUtils.dropTable(mConnectionSource, BlackToken.class, false);
         mConnectionSource.close();
     }
 
@@ -56,6 +58,7 @@ public class CleanDatabase {
         TableUtils.createTableIfNotExists(mConnectionSource, User.class);
         TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
         TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, BlackToken.class);
 
 
         User user = new User("admin", "admin");

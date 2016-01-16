@@ -27,10 +27,8 @@ import com.sun.istack.internal.NotNull;
  */
 @DatabaseTable
 public class MObject implements Ject {
-    @DatabaseField(generatedId = true)
-    private int _id;
-    @DatabaseField(unique = true, canBeNull = false)
-    private String path;
+    @DatabaseField(generatedId = true) private int _id;
+    @DatabaseField(unique = true, canBeNull = false) private String path;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2) private User owner;
 
     private MObject() {

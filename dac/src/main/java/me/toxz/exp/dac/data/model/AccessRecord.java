@@ -26,8 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable
 public class AccessRecord {
-    @DatabaseField(generatedId = true)
-    private int id;
+    @DatabaseField(generatedId = true) private int id;
 
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private User subject;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private MObject object;

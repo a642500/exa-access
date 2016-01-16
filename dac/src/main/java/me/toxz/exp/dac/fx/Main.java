@@ -35,6 +35,7 @@ import java.sql.SQLException;
 public class Main extends Application {
     protected static Stage mPrimaryStage;
     private static User mUser;
+
     public static void main(String[] args) {
         launch(args);
     }

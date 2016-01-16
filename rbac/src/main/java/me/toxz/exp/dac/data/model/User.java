@@ -32,10 +32,8 @@ import java.sql.SQLException;
 public class User implements Ject {
     private static User admin;
     @DatabaseField(generatedId = true) private int _id;
-    @DatabaseField(canBeNull = false, unique = true)
-    private String username;
-    @DatabaseField
-    private String passwordHash;
+    @DatabaseField(canBeNull = false, unique = true) private String username;
+    @DatabaseField private String passwordHash;
 
     private User() {
         // keep for ORMLite

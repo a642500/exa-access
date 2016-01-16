@@ -38,14 +38,10 @@ import java.util.ResourceBundle;
  * Created by Carlos on 1/4/16.
  */
 public class LoginController extends AnchorPane implements Initializable {
-    @FXML
-    TextField userId;
-    @FXML
-    PasswordField password;
-    @FXML
-    Button login;
-    @FXML
-    Label errorMessage;
+    @FXML TextField userId;
+    @FXML PasswordField password;
+    @FXML Button login;
+    @FXML Label errorMessage;
     @FXML ImageView imageView;
 
     private void goToMainScene() throws IOException {

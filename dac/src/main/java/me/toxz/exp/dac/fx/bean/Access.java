@@ -19,9 +19,13 @@
 package me.toxz.exp.dac.fx.bean;
 
 import javafx.beans.property.SimpleStringProperty;
+import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.AccessRecord;
 import me.toxz.exp.dac.data.model.AccessType;
+import me.toxz.exp.dac.data.model.BlackToken;
 
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,8 +44,24 @@ public class Access {
         AccessRecord record = mRecordList.get(0);
         username = new SimpleStringProperty(record.getSubject().getUsername());
         objectPath = new SimpleStringProperty(record.getObject().getPath());
+        final Map<AccessType, List<BlackToken>> blockList = new HashMap<>();
+        try {
+            List<BlackToken> tokens = DatabaseHelper.getBlackTokenDao().queryForMatching(new BlackToken(record.getSubject(), record.getObject(), null));
+            blockList.putAll(tokens.stream().collect(Collectors.groupingBy(BlackToken::getAccessType)));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         Map<AccessType, List<AccessRecord>> grantList = mRecordList.stream().collect(Collectors.groupingBy(AccessRecord::getAccessType));
-        permissions = new SimpleStringProperty(grantList.keySet().stream().map(Enum::toString).collect(Collectors.joining(",")));
+        permissions = new SimpleStringProperty(grantList.keySet().stream().map(accessType -> {
+            String name = accessType.name();
+            List<BlackToken> those = blockList.get(accessType);
+            if (those != null && those.size() > 0) {
+                name = name + "(Invalid)";
+            }
+            return name;
+        }).collect(Collectors.joining(", ")));
         grants = grantList.entrySet().stream().map(accessTypeListEntry -> new Grant(accessTypeListEntry.getKey(), accessTypeListEntry.getValue())).collect(Collectors.toList());
     }
 

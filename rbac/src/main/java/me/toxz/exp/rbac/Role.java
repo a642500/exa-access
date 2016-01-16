@@ -20,64 +20,22 @@ package me.toxz.exp.rbac;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.sun.istack.internal.NotNull;
-import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.data.model.Ject;
-
-import java.sql.SQLException;
 
 /**
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
 public class Role implements Ject, Comparable<Role> {
-    private static Role admin;
     @DatabaseField(generatedId = true) private int _id;
-    @DatabaseField(canBeNull = false, unique = true) private String username;
-    @DatabaseField private String passwordHash;
+    @DatabaseField(canBeNull = false, unique = true) private String rolename;
 
     private Role() {
         // keep for ORMLite
     }
 
-    public Role(@NotNull String username, String password) {
-        this.username = username;
-        updatePassword(password);
-    }
-
-    public static Role admin() {
-        if (admin == null) {
-            try {
-                admin = DatabaseHelper.getUserDao().queryForMatching(new Role("admin", null)).get(0);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return admin;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(@NotNull String username) {
-        this.username = username;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public boolean isPasswordValidate(String password) {
-        return computePasswordHash(password).equals(this.passwordHash);
-    }
-
-    public void updatePassword(String password) {
-        this.passwordHash = computePasswordHash(password);
-    }
-
-    private String computePasswordHash(String password) {
-        return password;//TODO hash password
+    public Role(String rolename) {
+        this.rolename = rolename;
     }
 
     @Override
@@ -92,11 +50,13 @@ public class Role implements Ject, Comparable<Role> {
 
     @Override
     public String toString() {
-        return username;
+        return rolename;
     }
 
     @Override
     public int compareTo(Role o) {
-        return 0;
+        if (o == null)
+            throw new IncomparableException();
+        return 0;//TODO implement compare
     }
 }

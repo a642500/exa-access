@@ -37,7 +37,7 @@ import java.util.concurrent.Callable;
  * Created by Carlos on 1/4/16.
  */
 public class DatabaseHelper {
-    public static final String URL = "jdbc:mysql://10.111.213.121/access_exp?user=root&password=9072";
+    public static final String URL = "jdbc:mysql:///access_exp?user=root";
     public static DatabaseType mDatabaseType;
     private static ConnectionSource mConnectionSource;
     private static Dao<MObject, Integer> mMObjectDao;

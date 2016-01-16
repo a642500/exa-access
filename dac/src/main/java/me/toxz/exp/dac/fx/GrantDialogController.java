@@ -92,8 +92,7 @@ public class GrantDialogController implements Initializable {
                 try {
                     List<AccessRecord> records = accessRecordDao.queryForMatching(new AccessRecord(user, newValue, null, null));
                     List<AccessType> types = records.stream().map(AccessRecord::getAccessType).collect(Collectors.toList());
-                    types.remove(AccessType.CONTROL);//TODO type1: center
-                    //TODO grant repeat.  for example: A has R,C for o, A grant A as R for o. Then two same record in AccessRecord
+                    //                    types.remove(AccessType.CONTROL);// type1: center
 
                     permissionChoiceBox.getItems().addAll(types);
                     permissionChoiceBox.getSelectionModel().select(0);
@@ -159,7 +158,8 @@ public class GrantDialogController implements Initializable {
         } else {
             List<AccessRecord> parent = DatabaseHelper.getAccessRecordDao().queryForMatching(new AccessRecord(origin, object, type, null));
             for (AccessRecord record : parent) {
-                if (checkCircle(record)) return true;
+                if (record.getGrantedUser().equals(target)) return true;
+                else if (checkCircle(record)) return true;
             }
             return false;
         }

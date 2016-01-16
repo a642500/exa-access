@@ -16,12 +16,13 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.rbac.data.model;
+package me.toxz.exp.rbac;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.sun.istack.internal.NotNull;
 import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.model.Ject;
 
 import java.sql.SQLException;
 
@@ -29,7 +30,7 @@ import java.sql.SQLException;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class Role implements Ject {
+public class Role implements Ject, Comparable<Role> {
     private static Role admin;
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true) private String username;
@@ -92,5 +93,10 @@ public class Role implements Ject {
     @Override
     public String toString() {
         return username;
+    }
+
+    @Override
+    public int compareTo(Role o) {
+        return 0;
     }
 }

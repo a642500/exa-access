@@ -33,7 +33,7 @@ public class URA {
     }
 
     public static boolean canWeakRevoke(Session session, User target, Role role) throws SQLException {
-        //TODO judge whether targeted user is explicit member of the role, if not, return false.
+        // judge whether targeted user is explicit member of the role, if not, return false.
         Set<Role> explicitRole = UA.getAllExplicitRole(target);
         return explicitRole.contains(role) && canRevoke(session, role);
     }

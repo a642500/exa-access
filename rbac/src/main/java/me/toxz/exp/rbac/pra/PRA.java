@@ -5,37 +5,45 @@ import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.Session;
 import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.pa.PA;
+import me.toxz.exp.rbac.rh.RH;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Carlos on 2016/1/16.
  */
 public class PRA {
-    public static boolean canAssgin(Session session, Role target, Permission permission) throws SQLException {
-        return queryAllCanAssign(session.getRole()).stream().anyMatch(canAssign -> canAssign.getConditionp().can(permission) && canAssign.getRange().contains(target));
+    public static boolean canAssginp(Session session, Role target, Permission permission) throws SQLException {
+        return queryAllCanAssignp(session.getRole()).stream().anyMatch(canAssign -> canAssign.getConditionp().can(permission) && canAssign.getRange().contains(target));
     }
 
     @NotNull
-    private static List<CanAssignp> queryAllCanAssign(Role role) throws SQLException {
-        //TODO get all can assign by this role and this role's sub
-        List<CanAssignp> list = new ArrayList<>();
-        list.addAll(DatabaseHelper.getCanAssignpDao().queryForMatching(new CanAssignp(null, role, null)));
-        return list;
+    private static Set<CanAssignp> queryAllCanAssignp(Role role) throws SQLException {
+        // get all can assign by this role and this role's sub
+        final Set<CanAssignp> canAssignps = new HashSet<>();
+        final Set<Role> children = RH.getAllChildren(role);
+        children.add(role);
+        for (Role child : children) {
+            canAssignps.addAll(DatabaseHelper.getCanAssignpDao().queryForMatching(new CanAssignp(null, child, null)));
+        }
+        return canAssignps;
     }
 
-    public static boolean canWeakRevokep(Session session, Role target) throws SQLException {
-        //TODO judge whether targeted user is explicit member of the role, if not, return false.
-        return canRevokep(session, target);
+    public static boolean canWeakRevokep(Session session, Role target, Permission permission) throws SQLException {
+        // judge whether targeted role explicitly has the permission, if not, return false.
+        Set<Permission> explicitPermission = PA.getAllExplicitPermission(target);
+        return explicitPermission.contains(permission) && canRevokep(session, target);
     }
 
     public static boolean canStrongRevokep(Session session, Role target) throws SQLException {
-        //TODO get target those roles which >= role
         // if can revoke all those roles, then return true
-        List<Role> rolesAbove = new ArrayList<>();
-        return rolesAbove.stream().allMatch(toRevoke -> {
+        Set<Role> roleParents = RH.getAllParents(target);
+        // get target those roles which >= role
+        roleParents.add(target);
+        return roleParents.stream().allMatch(toRevoke -> {
             try {
                 return canRevokep(session, toRevoke);
             } catch (SQLException e) {
@@ -50,10 +58,15 @@ public class PRA {
     }
 
     @NotNull
-    private static List<CanRevokep> queryAllCanRevoke(Role operator) throws SQLException {
-        //TODO get all can revoke by this role and this role's sub
-        List<CanRevokep> list = new ArrayList<>();
-        list.addAll(DatabaseHelper.getCanRevokepDao().queryForMatching(new CanRevokep(operator, null)));
-        return list;
+    private static Set<CanRevokep> queryAllCanRevoke(Role operator) throws SQLException {
+        // get all can revoke by this role and this role's sub
+        final Set<CanRevokep> canRevokeps = new HashSet<>();
+        final Set<Role> children = RH.getAllChildren(operator);
+        children.add(operator);
+
+        for (Role child : children) {
+            canRevokeps.addAll(DatabaseHelper.getCanRevokepDao().queryForMatching(new CanRevokep(child, null)));
+        }
+        return canRevokeps;
     }
 }

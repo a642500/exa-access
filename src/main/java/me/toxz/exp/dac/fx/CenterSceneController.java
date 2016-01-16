@@ -29,6 +29,8 @@ import javafx.scene.control.*;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.*;
 import me.toxz.exp.dac.fx.animation.ShakeTransition;
+import me.toxz.exp.dac.fx.bean.Access;
+import me.toxz.exp.dac.fx.bean.Grant;
 import org.controlsfx.control.CheckListView;
 
 import java.io.IOException;

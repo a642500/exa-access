@@ -16,9 +16,11 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.data.model;
+package me.toxz.exp.dac.fx.bean;
 
 import javafx.beans.property.SimpleStringProperty;
+import me.toxz.exp.dac.data.model.AccessRecord;
+import me.toxz.exp.dac.data.model.AccessType;
 
 import java.util.List;
 import java.util.Map;

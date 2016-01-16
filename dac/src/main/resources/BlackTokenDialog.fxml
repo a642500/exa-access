@@ -36,7 +36,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0" prefWidth="373.0" vgap="20.0">
+      <GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="20.0">
           <children>
               <ComboBox fx:id="userComboBox" prefWidth="150.0" GridPane.columnIndex="2" />
               <HBox maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="2" GridPane.rowIndex="3">

@@ -20,13 +20,12 @@ package me.toxz.exp.rbac;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import me.toxz.exp.rbac.data.model.Ject;
 
 /**
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class Role implements Ject, Comparable<Role> {
+public class Role implements Comparable<Role> {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true) private String rolename;
 
@@ -43,7 +42,7 @@ public class Role implements Ject, Comparable<Role> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(java.lang.Object obj) {
         return obj instanceof Role && this._id == ((Role) obj)._id;
     }
 

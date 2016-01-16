@@ -34,7 +34,7 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(java.lang.Object obj) {
         return obj instanceof User && this._id == ((User) obj)._id;
     }
 

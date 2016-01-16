@@ -25,6 +25,7 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
+import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.pra.CanAssignp;
@@ -53,6 +54,7 @@ public class DatabaseHelper {
     private static Dao<CanAssignp, Integer> mCanAssignpDao;
     private static Dao<CanRevokep, Integer> mCanRevokepDao;
     private static Dao<Conditionp, Integer> mConditionpDao;
+    private static Dao<Permission, Integer> mPermissionDao;
 
     public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
         return TransactionManager.callInTransaction(mConnectionSource, callable);
@@ -125,6 +127,13 @@ public class DatabaseHelper {
             mConditionpDao = open(Conditionp.class);
         }
         return mConditionpDao;
+    }
+
+    public static Dao<Permission, Integer> getPermissionDao() throws SQLException {
+        if (mPermissionDao == null) {
+            mPermissionDao = open(Permission.class);
+        }
+        return mPermissionDao;
     }
 
     private static <T> Dao<T, Integer> open(Class<T> clazz) throws SQLException {

@@ -31,10 +31,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.AccessType;
-import me.toxz.exp.dac.data.model.MObject;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.dac.data.model.*;
 import me.toxz.exp.dac.fx.animation.ShakeTransition;
 
 import java.io.IOException;
@@ -122,6 +119,14 @@ public class GrantDialogController implements Initializable {
         AccessRecord record = new AccessRecord(user, object, type, Main.getLoginUser());
 
         try {
+            BlackToken token = new BlackToken(user, object, type);
+            if (DatabaseHelper.getBlackTokenDao().queryForMatching(token).size() > 0) {
+                headLabel.setText("No! Black Token forbid.");
+                new ShakeTransition(mStage.getScene().getRoot(), event -> {
+                }).playFromStart();
+                return;
+            }
+
             List<AccessRecord> accessRecords = DatabaseHelper.getAccessRecordDao().queryForMatching(record);
 
             if (accessRecords.size() > 0) {

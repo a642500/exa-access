@@ -4,7 +4,7 @@ import com.google.common.collect.Range;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import me.toxz.exp.rbac.Role;
-import me.toxz.exp.rbac.data.RangeType;
+import me.toxz.exp.rbac.data.RoleRangeType;
 
 /**
  * URA97
@@ -13,12 +13,13 @@ import me.toxz.exp.rbac.data.RangeType;
  */
 @DatabaseTable
 public class CanAssign {
+    @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Role operator;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Condition condition;
 
-    @DatabaseField(persisterClass = RangeType.class)
+    @DatabaseField(persisterClass = RoleRangeType.class)
     private Range<Role> range;
 
     public CanAssign(Condition condition, Role operator, Range<Role> range) {

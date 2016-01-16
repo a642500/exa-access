@@ -16,10 +16,10 @@ import static com.google.common.collect.BoundType.OPEN;
 /**
  * Created by Carlos on 2016/1/16.
  */
-public class RangeType extends StringType {
+public class RoleRangeType extends StringType {
 
 
-    protected RangeType(SqlType sqlType, Class<?>[] classes) {
+    protected RoleRangeType(SqlType sqlType, Class<?>[] classes) {
         super(sqlType, classes);
     }
 

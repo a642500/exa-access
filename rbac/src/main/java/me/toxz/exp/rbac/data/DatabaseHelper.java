@@ -48,7 +48,7 @@ public class DatabaseHelper {
     public static final String URL = "jdbc:mysql://10.111.213.121/access_exp_rbac?user=root&password=9072";
     public static DatabaseType mDatabaseType;
     private static ConnectionSource mConnectionSource;
-    private static Dao<Object, Integer> mObjectDao;
+    private static Dao<me.toxz.exp.rbac.Object, Integer> mObjectDao;
     private static Dao<Role, Integer> mRoleDao;
     private static Dao<User, Integer> mUserDao;
     private static Dao<CanAssign, Integer> mCanAssignDao;
@@ -72,9 +72,9 @@ public class DatabaseHelper {
         mConnectionSource = new JdbcConnectionSource(URL, mDatabaseType);
     }
 
-    public static Dao<Object, Integer> getObjectDao() throws SQLException {
+    public static Dao<me.toxz.exp.rbac.Object, Integer> getObjectDao() throws SQLException {
         if (mObjectDao == null) {
-            mObjectDao = open(Object.class);
+            mObjectDao = open(me.toxz.exp.rbac.Object.class);
         }
         return mObjectDao;
     }

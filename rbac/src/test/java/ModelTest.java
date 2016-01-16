@@ -76,11 +76,11 @@ public class ModelTest {
 
     @Test
     public void testCreateAndDeleteRole() throws SQLException {
-        final Role role = testRole();
-        createRole(role);
+        final Role role = new Role(TEST_ROLE_NAME);
+        assertEquals(1, daoRole.create(role));
 
-        final Role created = findRoleInDatabase(role);
-        deleteRole(created);
+        final Role created = DatabaseHelper.getRoleDao().queryForMatching(testRole()).get(0);
+        assertEquals(1, daoRole.delete(created));
     }
 
     void createRole(Role role) throws SQLException {

@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.rbac.data.model;
+package me.toxz.exp.rbac;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -26,17 +26,17 @@ import com.sun.istack.internal.NotNull;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class MObject implements Ject {
+public class Object {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(unique = true, canBeNull = false) private String path;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Role owner;
 
-    private MObject() {
+    private Object() {
         // keep for ORMLite
     }
 
-    public MObject(@NotNull String path, Role owner) {
+    public Object(@NotNull String path, Role owner) {
         this.path = path;
         this.owner = owner;
     }
@@ -54,8 +54,8 @@ public class MObject implements Ject {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof MObject && this._id == ((MObject) obj)._id;
+    public boolean equals(java.lang.Object obj) {
+        return obj instanceof Object && this._id == ((Object) obj)._id;
     }
 
     @Override
@@ -65,6 +65,6 @@ public class MObject implements Ject {
 
     @Override
     public int hashCode() {
-        return ("MObject" + _id).hashCode();
+        return ("Object" + _id).hashCode();
     }
 }

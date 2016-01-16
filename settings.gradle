@@ -16,5 +16,4 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-rootProject.name = 'exp.dac'
-
+include 'dac','rbac'

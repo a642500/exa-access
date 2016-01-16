@@ -10,6 +10,7 @@ import me.toxz.exp.rbac.User;
  */
 @DatabaseTable
 public class Condition {
+    @DatabaseField(generatedId = true) private int id;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private Role requireRole;
 

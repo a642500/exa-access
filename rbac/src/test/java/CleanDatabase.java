@@ -21,8 +21,19 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import me.toxz.exp.rbac.Object;
+import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
+import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.pa.AccessRecord;
+import me.toxz.exp.rbac.pra.CanAssignp;
+import me.toxz.exp.rbac.pra.CanRevokep;
+import me.toxz.exp.rbac.pra.Conditionp;
+import me.toxz.exp.rbac.rh.ExtendRecord;
+import me.toxz.exp.rbac.ua.RoleRecord;
+import me.toxz.exp.rbac.ura.CanAssign;
+import me.toxz.exp.rbac.ura.CanRevoke;
+import me.toxz.exp.rbac.ura.Condition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -42,8 +53,19 @@ public class CleanDatabase {
     public void clean() throws SQLException {
         final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
 
+        TableUtils.dropTable(mConnectionSource, User.class, false);
         TableUtils.dropTable(mConnectionSource, Role.class, false);
         TableUtils.dropTable(mConnectionSource, Object.class, false);
+        TableUtils.dropTable(mConnectionSource, Permission.class, false);
+        TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+        TableUtils.dropTable(mConnectionSource, RoleRecord.class, false);
+        TableUtils.dropTable(mConnectionSource, ExtendRecord.class, false);
+        TableUtils.dropTable(mConnectionSource, CanAssign.class, false);
+        TableUtils.dropTable(mConnectionSource, CanRevoke.class, false);
+        TableUtils.dropTable(mConnectionSource, Condition.class, false);
+        TableUtils.dropTable(mConnectionSource, CanAssignp.class, false);
+        TableUtils.dropTable(mConnectionSource, CanRevokep.class, false);
+        TableUtils.dropTable(mConnectionSource, Conditionp.class, false);
     }
 
     @Test

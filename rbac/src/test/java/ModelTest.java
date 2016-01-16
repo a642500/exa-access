@@ -27,8 +27,17 @@ import com.sun.istack.internal.NotNull;
 import me.toxz.exp.rbac.Object;
 import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
+import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.pa.AccessRecord;
+import me.toxz.exp.rbac.pra.CanAssignp;
+import me.toxz.exp.rbac.pra.CanRevokep;
+import me.toxz.exp.rbac.pra.Conditionp;
+import me.toxz.exp.rbac.rh.ExtendRecord;
+import me.toxz.exp.rbac.ua.RoleRecord;
+import me.toxz.exp.rbac.ura.CanAssign;
+import me.toxz.exp.rbac.ura.CanRevoke;
+import me.toxz.exp.rbac.ura.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,14 +61,25 @@ public class ModelTest {
     public static final String TEST_OBJECT_PATH = "test_object_path";
     private ConnectionSource mConnectionSource;
     private DatabaseType mDatabaseType;
-    private Dao<Role, Integer> daoUser;
+    private Dao<Role, Integer> daoRole;
     private Dao<Object, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
 
     private void init() throws SQLException {
+        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
         TableUtils.createTableIfNotExists(mConnectionSource, Role.class);
         TableUtils.createTableIfNotExists(mConnectionSource, Object.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Permission.class);
         TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, RoleRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, ExtendRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanAssign.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanRevoke.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Condition.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanAssignp.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanRevokep.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Conditionp.class);
+
         createInitAccount();
     }
 
@@ -71,7 +91,7 @@ public class ModelTest {
             init();
         } catch (SQLException ignored) {
         }
-        daoUser = DatabaseHelper.getRoleDao();
+        daoRole = DatabaseHelper.getRoleDao();
         daoObject = DatabaseHelper.getObjectDao();
         daoAccess = DatabaseHelper.getAccessRecordDao();
     }
@@ -81,35 +101,35 @@ public class ModelTest {
         DatabaseHelper.getRoleDao().createIfNotExists(role);
     }
 
-    Role testUser() {
+    Role testRole() {
         return new Role(TEST_ROLE_NAME);
     }
 
-    Role findUserInDatabase(Role role) throws SQLException {
-        return DatabaseHelper.getRoleDao().queryForMatching(testUser()).get(0);
+    Role findRoleInDatabase(Role role) throws SQLException {
+        return DatabaseHelper.getRoleDao().queryForMatching(testRole()).get(0);
     }
 
     @Test
-    public void testCreateAndDeleteUser() throws SQLException {
-        final Role role = testUser();
-        createUser(role);
+    public void testCreateAndDeleteRole() throws SQLException {
+        final Role role = testRole();
+        createRole(role);
 
-        final Role created = findUserInDatabase(role);
-        deleteUser(created);
+        final Role created = findRoleInDatabase(role);
+        deleteRole(created);
     }
 
-    void createUser(Role role) throws SQLException {
-        assertEquals(1, daoUser.create(role));
+    void createRole(Role role) throws SQLException {
+        assertEquals(1, daoRole.create(role));
     }
 
-    void deleteUser(Role role) throws SQLException {
-        assertEquals(1, daoUser.delete(role));
+    void deleteRole(Role role) throws SQLException {
+        assertEquals(1, daoRole.delete(role));
     }
 
     @Test
-    public void createAndDeleteObject() throws SQLException {
-        createUser(testUser());
-        final Role role = findUserInDatabase(testUser());
+    public void createAndDeleteRole() throws SQLException {
+        createRole(testRole());
+        final Role role = findRoleInDatabase(testRole());
 
         final Object object = testObject(role);
         createObject(object);
@@ -136,8 +156,8 @@ public class ModelTest {
     @Test
     public void createAccessRecord() throws SQLException {
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
-            createUser(testUser());
-            final Role role = findUserInDatabase(testUser());
+            createRole(testRole());
+            final Role role = findRoleInDatabase(testRole());
 
             createObject(testObject(role));
             final Object object = findObjectInDataBase(testObject(role));
@@ -151,7 +171,7 @@ public class ModelTest {
             assertEquals(1, daoAccess.delete(accessRecords));
 
             deleteObject(object);
-            deleteUser(role);
+            deleteRole(role);
             return null;
         });
 

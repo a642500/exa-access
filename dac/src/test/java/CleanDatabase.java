@@ -21,15 +21,19 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.BlackToken;
-import me.toxz.exp.dac.data.model.MObject;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.dac.data.model.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static me.toxz.exp.dac.data.DatabaseHelper.getAccessRecordDao;
+import static me.toxz.exp.dac.data.model.User.admin;
 
 /**
  * Created by Carlos on 1/6/16.
@@ -37,10 +41,12 @@ import java.sql.SQLException;
 @RunWith(value = JUnit4.class)
 public class CleanDatabase {
     public static final String TEST_USER_PREFIX = "test_user_";
+    public static final String TEST_OBJECT_PREFIX = "test_obejct_";
     public static final String TEST_USRE_PASSWORD_PREFIX = TEST_USER_PREFIX + "password_";
-    public static final int TEST_USER_NUM = 4;
+    public static final int TEST_USER_NUM = 5;
+    public static final int TEST_OBJECT_NUM = 3;
 
-    @Test
+    @Before
     public void clean() throws SQLException {
         final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
 
@@ -61,11 +67,24 @@ public class CleanDatabase {
         TableUtils.createTableIfNotExists(mConnectionSource, BlackToken.class);
 
 
-        User user = new User("admin", "admin");
-        DatabaseHelper.getUserDao().createIfNotExists(user);
+        User admin = new User("admin", "admin");
+        DatabaseHelper.getUserDao().createIfNotExists(admin);
 
-//        for (int i = 0; i < TEST_USER_NUM; i++) {
-//            DatabaseHelper.getUserDao().create(new User(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i));
-//        }
+        for (int i = 0; i < TEST_USER_NUM; i++) {
+            User user1 = new User(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i);
+            DatabaseHelper.getUserDao().create(user1);
+
+            for (int j = 0; j < TEST_OBJECT_NUM; j++) {
+                MObject o = new MObject(TEST_OBJECT_PREFIX + i + j, user1);
+                DatabaseHelper.getMObjectDao().create(o);
+
+                List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user1, o, accessType, admin())).collect(Collectors.toList());
+                for (AccessRecord accessRecord : accessRecords) {
+                    getAccessRecordDao().create(accessRecord);
+                }
+            }
+        }
+
+
     }
 }

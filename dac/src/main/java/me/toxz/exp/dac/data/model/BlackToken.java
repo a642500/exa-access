@@ -35,4 +35,9 @@ public class BlackToken {
     public AccessType getAccessType() {
         return accessType;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s can't be granted to %s %s", subject, accessType, object);
+    }
 }

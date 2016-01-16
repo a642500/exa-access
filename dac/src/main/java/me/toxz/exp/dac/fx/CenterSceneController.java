@@ -36,10 +36,7 @@ import org.controlsfx.control.CheckListView;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -197,6 +194,45 @@ public class CenterSceneController implements Initializable {
         }
         toDeletes.forEach(this::revoke);
         refreshTable(mCurrentJect);
+    }
+
+    public void onRemoveTOken(ActionEvent actionEvent) throws SQLException {
+        Dialog<List<BlackToken>> removeDialog = new Dialog<>();
+        removeDialog.setTitle("Remove black token");
+        removeDialog.setHeaderText("Please check the token you want to remove");
+
+        ButtonType removeButtonType = new ButtonType("Remove", ButtonBar.ButtonData.OK_DONE);
+        ButtonType removeAllButtonType = new ButtonType("Remove All", ButtonBar.ButtonData.OK_DONE);
+        removeDialog.getDialogPane().getButtonTypes().addAll(removeButtonType, removeAllButtonType, ButtonType.CANCEL);
+
+        final List<MObject> ownObjects = DatabaseHelper.getMObjectDao().queryForMatching(new MObject(null, Main.getLoginUser()));
+
+        final List<BlackToken> blackTokenList = new ArrayList<>();
+        for (MObject mObject : ownObjects) {
+            blackTokenList.addAll(DatabaseHelper.getBlackTokenDao().queryForMatching(new BlackToken(null, mObject, null)));
+        }
+
+        final CheckListView<BlackToken> listView = new CheckListView<>(new ObservableListWrapper<>(blackTokenList));
+
+        removeDialog.getDialogPane().setContent(listView);
+        removeDialog.setResultConverter(param -> {
+            if (param == removeButtonType) {
+                return listView.getCheckModel().getCheckedItems();
+            } else if (param == removeAllButtonType) {
+                return blackTokenList;
+            }
+            return null;
+        });
+
+        Optional<List<BlackToken>> result = removeDialog.showAndWait();
+
+        result.ifPresent(blackTokens -> {
+            try {
+                DatabaseHelper.getBlackTokenDao().delete(blackTokens);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void onCreateObject(ActionEvent actionEvent) {

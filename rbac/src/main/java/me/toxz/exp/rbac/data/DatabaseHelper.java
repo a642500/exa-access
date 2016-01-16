@@ -28,9 +28,12 @@ import com.j256.ormlite.support.ConnectionSource;
 import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.User;
+import me.toxz.exp.rbac.pa.AccessRecord;
 import me.toxz.exp.rbac.pra.CanAssignp;
 import me.toxz.exp.rbac.pra.CanRevokep;
 import me.toxz.exp.rbac.pra.Conditionp;
+import me.toxz.exp.rbac.rh.ExtendRecord;
+import me.toxz.exp.rbac.ua.RoleRecord;
 import me.toxz.exp.rbac.ura.CanAssign;
 import me.toxz.exp.rbac.ura.CanRevoke;
 import me.toxz.exp.rbac.ura.Condition;
@@ -55,6 +58,10 @@ public class DatabaseHelper {
     private static Dao<CanRevokep, Integer> mCanRevokepDao;
     private static Dao<Conditionp, Integer> mConditionpDao;
     private static Dao<Permission, Integer> mPermissionDao;
+    private static Dao<AccessRecord, Integer> mAccessRecordDao;
+    private static Dao<RoleRecord, Integer> mRoleRecordDao;
+    private static Dao<ExtendRecord, Integer> mExtendRecordDao;
+
 
     public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
         return TransactionManager.callInTransaction(mConnectionSource, callable);
@@ -134,6 +141,27 @@ public class DatabaseHelper {
             mPermissionDao = open(Permission.class);
         }
         return mPermissionDao;
+    }
+
+    public static Dao<AccessRecord, Integer> getAccessRecordDao() throws SQLException {
+        if (mAccessRecordDao == null) {
+            mAccessRecordDao = open(AccessRecord.class);
+        }
+        return mAccessRecordDao;
+    }
+
+    public static Dao<RoleRecord, Integer> getRoleRecordDao() throws SQLException {
+        if (mRoleRecordDao == null) {
+            mRoleRecordDao = open(RoleRecord.class);
+        }
+        return mRoleRecordDao;
+    }
+
+    public static Dao<ExtendRecord, Integer> getExtendRecordDao() throws SQLException {
+        if (mExtendRecordDao == null) {
+            mExtendRecordDao = open(ExtendRecord.class);
+        }
+        return mExtendRecordDao;
     }
 
     private static <T> Dao<T, Integer> open(Class<T> clazz) throws SQLException {

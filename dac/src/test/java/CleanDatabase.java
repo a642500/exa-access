@@ -40,8 +40,8 @@ import static me.toxz.exp.dac.data.model.User.admin;
  */
 @RunWith(value = JUnit4.class)
 public class CleanDatabase {
-    public static final String TEST_USER_PREFIX = "test_user_";
-    public static final String TEST_OBJECT_PREFIX = "test_obejct_";
+    public static final String TEST_USER_PREFIX = "user";
+    public static final String TEST_OBJECT_PREFIX = "obejct";
     public static final String TEST_USRE_PASSWORD_PREFIX = TEST_USER_PREFIX + "password_";
     public static final int TEST_USER_NUM = 5;
     public static final int TEST_OBJECT_NUM = 3;
@@ -71,7 +71,7 @@ public class CleanDatabase {
         DatabaseHelper.getUserDao().createIfNotExists(admin);
 
         for (int i = 0; i < TEST_USER_NUM; i++) {
-            User user1 = new User(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i);
+            User user1 = new User(TEST_USER_PREFIX + i, String.valueOf(i));
             DatabaseHelper.getUserDao().create(user1);
 
             for (int j = 0; j < TEST_OBJECT_NUM; j++) {

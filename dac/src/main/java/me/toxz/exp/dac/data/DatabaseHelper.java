@@ -26,6 +26,7 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import me.toxz.exp.dac.data.model.AccessRecord;
+import me.toxz.exp.dac.data.model.BlackToken;
 import me.toxz.exp.dac.data.model.MObject;
 import me.toxz.exp.dac.data.model.User;
 
@@ -42,6 +43,7 @@ public class DatabaseHelper {
     private static Dao<MObject, Integer> mMObjectDao;
     private static Dao<AccessRecord, Integer> mAccessRecordDao;
     private static Dao<User, Integer> mUserDao;
+    private static Dao<BlackToken, Integer> mBlackTokenDao;
 
     public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
         return TransactionManager.callInTransaction(mConnectionSource, callable);
@@ -71,6 +73,13 @@ public class DatabaseHelper {
             mUserDao = open(User.class);
         }
         return mUserDao;
+    }
+
+    public static Dao<BlackToken, Integer> getBlackTokenDao() throws SQLException {
+        if (mBlackTokenDao == null) {
+            mBlackTokenDao = open(BlackToken.class);
+        }
+        return mBlackTokenDao;
     }
 
     private static <T> Dao<T, Integer> open(Class<T> clazz) throws SQLException {

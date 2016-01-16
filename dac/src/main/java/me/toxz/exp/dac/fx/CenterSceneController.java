@@ -252,4 +252,13 @@ public class CenterSceneController implements Initializable {
             }
         });
     }
+
+    public void onGiveBlackToken(ActionEvent actionEvent) throws IOException {
+        BlackTokenDialogController.show(blackToken -> {
+            if (blackToken != null) {
+                if (blackToken.getSubject().equals(mCurrentJect) || blackToken.getObject().equals(mCurrentJect))
+                    refreshTable(mCurrentJect);
+            }
+        });
+    }
 }

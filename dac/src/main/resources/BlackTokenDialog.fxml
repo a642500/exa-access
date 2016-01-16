@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~     Copyright (C) 2016 Carlos
+  ~
+  ~     This program is free software; you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation; either version 2 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License along
+  ~     with this program; if not, write to the Free Software Foundation, Inc.,
+  ~     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  -->
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity"
+          minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0" prefWidth="373.0" vgap="20.0"
+          xmlns="http://javafx.com/javafx/8" fx:controller="me.toxz.exp.dac.fx.BlackTokenDialogController">
+    <children>
+        <ComboBox fx:id="userComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <HBox maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity"
+              GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <children>
+                <HBox fx:id="actionParent" alignment="CENTER">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </HBox>
+                <Pane maxWidth="+Infinity" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="cancelButton" cancelButton="true" minWidth="80.0" mnemonicParsing="false"
+                        onAction="#cancel" text="Cancel" HBox.hgrow="NEVER">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+                <HBox fx:id="okParent" alignment="CENTER">
+                    <children>
+                        <Button fx:id="okButton" minWidth="80.0" mnemonicParsing="false" onAction="#ok" text="Ok"
+                                HBox.hgrow="NEVER">
+                            <HBox.margin>
+                                <Insets left="14.0"/>
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+        <Label text="Permission" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <Label text="Subject" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label text="Object" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="objectComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <ChoiceBox fx:id="permissionChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+        <Label text="Grant" fx:id="headLabel" GridPane.columnIndex="1"/>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity"/>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="Infinity" minWidth="10.0" prefWidth="90.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="Infinity" minWidth="-Infinity"
+                           prefWidth="184.0"/>
+    </columnConstraints>
+    <padding>
+        <Insets bottom="14.0" left="14.0" right="14.0" top="14.0"/>
+    </padding>
+    <rowConstraints>
+        <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="62.0" valignment="CENTER" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="32.0" valignment="CENTER" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="34.0" minHeight="-Infinity" prefHeight="34.0" vgrow="NEVER"/>
+    </rowConstraints>
+</GridPane>

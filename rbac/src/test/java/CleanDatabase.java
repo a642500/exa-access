@@ -20,10 +20,9 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import me.toxz.exp.rbac.Object;
+import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.data.DatabaseHelper;
-import me.toxz.exp.rbac.data.model.AccessRecord;
-import me.toxz.exp.rbac.data.model.MObject;
-import me.toxz.exp.rbac.data.model.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,8 +43,7 @@ public class CleanDatabase {
         final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
 
         TableUtils.dropTable(mConnectionSource, Role.class, false);
-        TableUtils.dropTable(mConnectionSource, MObject.class, false);
-        TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+        TableUtils.dropTable(mConnectionSource, Object.class, false);
     }
 
     @Test
@@ -53,7 +51,7 @@ public class CleanDatabase {
         final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
 
         for (int i = 0; i < TEST_USER_NUM; i++) {
-            DatabaseHelper.getUserDao().create(new Role(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i));
+            DatabaseHelper.getRoleDao().create(new Role(TEST_USER_PREFIX + i));
         }
     }
 }

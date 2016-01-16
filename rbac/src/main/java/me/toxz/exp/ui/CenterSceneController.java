@@ -105,7 +105,7 @@ public class CenterSceneController implements Initializable {
     }
 
     private void refreshTree() throws SQLException {
-        List<TreeItem<Ject>> userItems = DatabaseHelper.getUserDao().queryForAll().stream().filter(user -> !user.equals(Role.admin())).map((Function<Role, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
+        List<TreeItem<Ject>> userItems = DatabaseHelper.getRoleDao().queryForAll().stream().filter(user -> !user.equals(Role.admin())).map((Function<Role, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
         List<TreeItem<Ject>> objectItems = DatabaseHelper.getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
 
         subjectTreeItem.getChildren().setAll(userItems);

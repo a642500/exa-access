@@ -81,7 +81,7 @@ public class GrantDialogController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             Role role = Main.getLoginUser();
-            List<Role> grantable = DatabaseHelper.getUserDao().queryForAll();
+            List<Role> grantable = DatabaseHelper.getRoleDao().queryForAll();
             grantable.remove(Role.admin());
             grantable.remove(role);
             userComboBox.getItems().addAll(grantable);

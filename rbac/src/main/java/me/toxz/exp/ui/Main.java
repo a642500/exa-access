@@ -60,7 +60,7 @@ public class Main extends Application {
         //        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
         //        return new Scene(root, 400, 300);
         //TODO just for test, auto login by admin
-        final Role role = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", "admin").queryForFirst();
+        final Role role = DatabaseHelper.getRoleDao().queryBuilder().where().eq("username", "admin").queryForFirst();
 
         setLoginUser(role);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));

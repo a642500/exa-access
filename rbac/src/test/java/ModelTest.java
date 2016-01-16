@@ -24,11 +24,11 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.sun.istack.internal.NotNull;
+import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.data.model.AccessRecord;
 import me.toxz.exp.rbac.data.model.AccessType;
 import me.toxz.exp.rbac.data.model.MObject;
-import me.toxz.exp.rbac.data.model.Role;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,14 +70,14 @@ public class ModelTest {
             init();
         } catch (SQLException ignored) {
         }
-        daoUser = DatabaseHelper.getUserDao();
+        daoUser = DatabaseHelper.getRoleDao();
         daoObject = DatabaseHelper.getMObjectDao();
         daoAccess = DatabaseHelper.getAccessRecordDao();
     }
 
     void createInitAccount() throws SQLException {
         Role role = new Role("admin", "admin");
-        DatabaseHelper.getUserDao().createIfNotExists(role);
+        DatabaseHelper.getRoleDao().createIfNotExists(role);
     }
 
     Role testUser() {
@@ -85,7 +85,7 @@ public class ModelTest {
     }
 
     Role findUserInDatabase(Role role) throws SQLException {
-        return DatabaseHelper.getUserDao().queryForMatching(testUser()).get(0);
+        return DatabaseHelper.getRoleDao().queryForMatching(testUser()).get(0);
     }
 
     @Test

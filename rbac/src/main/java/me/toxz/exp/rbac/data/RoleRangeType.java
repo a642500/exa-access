@@ -18,9 +18,18 @@ import static com.google.common.collect.BoundType.OPEN;
  */
 public class RoleRangeType extends StringType {
 
+    private static final StringType singleTon = new RoleRangeType();
+
+    private RoleRangeType() {
+        super(SqlType.STRING, new Class<?>[]{Range.class});
+    }
 
     protected RoleRangeType(SqlType sqlType, Class<?>[] classes) {
         super(sqlType, classes);
+    }
+
+    public static StringType getSingleton() {
+        return singleTon;
     }
 
     @Override

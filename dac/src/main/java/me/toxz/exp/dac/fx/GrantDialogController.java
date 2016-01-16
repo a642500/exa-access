@@ -94,7 +94,7 @@ public class GrantDialogController implements Initializable {
                     List<AccessType> types = records.stream().map(AccessRecord::getAccessType).collect(Collectors.toList());
                     //                    types.remove(AccessType.CONTROL);// type1: center
 
-                    permissionChoiceBox.getItems().addAll(types);
+                    permissionChoiceBox.getItems().setAll(types);
                     permissionChoiceBox.getSelectionModel().select(0);
                 } catch (SQLException e) {
                     e.printStackTrace();

@@ -16,20 +16,14 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-group 'me.toxz'
-version '1.0-SNAPSHOT'
-
 apply plugin: 'java'
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
 
 sourceCompatibility = 1.8
 
-allprojects {
-    repositories {
-        jcenter()
-    }
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-jdbc:4.48'
+    compile 'mysql:mysql-connector-java:5.1.38'
+    compile 'org.controlsfx:controlsfx:8.40.10'
 }

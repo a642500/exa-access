@@ -16,20 +16,11 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-group 'me.toxz'
-version '1.0-SNAPSHOT'
+package me.toxz.exp.dac.data.model;
 
-apply plugin: 'java'
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-
-sourceCompatibility = 1.8
-
-allprojects {
-    repositories {
-        jcenter()
-    }
+/**
+ * Created by Carlos on 1/4/16.
+ */
+public enum AccessType {
+    WRITE, READ, CONTROL, ADD, DELETE
 }

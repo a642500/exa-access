@@ -26,7 +26,7 @@ import com.sun.istack.internal.NotNull;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class Object {
+public class Object implements UITreeItem {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(unique = true, canBeNull = false) private String path;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)

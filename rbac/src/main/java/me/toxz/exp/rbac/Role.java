@@ -25,7 +25,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class Role implements Comparable<Role> {
+public class Role implements UITreeItem, Comparable<Role> {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true) private String rolename;
 

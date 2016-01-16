@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by Carlos on 2016/1/16.
  */
 @DatabaseTable
-public class User {
+public class User implements UITreeItem {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true) private String username;
     @DatabaseField(canBeNull = false) private String password;

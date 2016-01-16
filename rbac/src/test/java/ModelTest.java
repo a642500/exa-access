@@ -22,22 +22,12 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import com.sun.istack.internal.NotNull;
 import me.toxz.exp.rbac.Object;
 import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
-import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.pa.AccessRecord;
-import me.toxz.exp.rbac.pra.CanAssignp;
-import me.toxz.exp.rbac.pra.CanRevokep;
-import me.toxz.exp.rbac.pra.Conditionp;
-import me.toxz.exp.rbac.rh.ExtendRecord;
-import me.toxz.exp.rbac.ua.RoleRecord;
-import me.toxz.exp.rbac.ura.CanAssign;
-import me.toxz.exp.rbac.ura.CanRevoke;
-import me.toxz.exp.rbac.ura.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,40 +55,15 @@ public class ModelTest {
     private Dao<Object, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
 
-    private void init() throws SQLException {
-        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, Role.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, Object.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, Permission.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, RoleRecord.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, ExtendRecord.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, CanAssign.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, CanRevoke.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, Condition.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, CanAssignp.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, CanRevokep.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, Conditionp.class);
-
-        createInitAccount();
-    }
 
     @Before
     public void setUp() throws SQLException {
         mDatabaseType = new MysqlDatabaseType();
         mConnectionSource = new JdbcConnectionSource(URL, mDatabaseType);
-        try {
-            init();
-        } catch (SQLException ignored) {
-        }
+
         daoRole = DatabaseHelper.getRoleDao();
         daoObject = DatabaseHelper.getObjectDao();
         daoAccess = DatabaseHelper.getAccessRecordDao();
-    }
-
-    void createInitAccount() throws SQLException {
-        Role role = new Role("admin");
-        DatabaseHelper.getRoleDao().createIfNotExists(role);
     }
 
     Role testRole() {

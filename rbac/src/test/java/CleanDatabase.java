@@ -72,8 +72,22 @@ public class CleanDatabase {
     public void createTestEnvironment() throws SQLException {
         final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
 
-        for (int i = 0; i < TEST_USER_NUM; i++) {
-            DatabaseHelper.getRoleDao().create(new Role(TEST_USER_PREFIX + i));
-        }
+        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Role.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Object.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Permission.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, RoleRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, ExtendRecord.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanAssign.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanRevoke.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Condition.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanAssignp.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, CanRevokep.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Conditionp.class);
+
+        Role role = new Role("admin");
+        DatabaseHelper.getRoleDao().createIfNotExists(role);
+
     }
 }

@@ -22,7 +22,6 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import com.sun.istack.internal.NotNull;
 import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.AccessRecord;
@@ -55,29 +54,14 @@ public class ModelTest {
     private Dao<MObject, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
 
-    private void init() throws SQLException {
-        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
-        createInitAccount();
-    }
-
     @Before
     public void setUp() throws SQLException {
         mDatabaseType = new MysqlDatabaseType();
         mConnectionSource = new JdbcConnectionSource(URL, mDatabaseType);
-        try {
-            init();
-        } catch (SQLException ignored) {
-        }
+
         daoUser = DatabaseHelper.getUserDao();
         daoObject = DatabaseHelper.getMObjectDao();
         daoAccess = DatabaseHelper.getAccessRecordDao();
-    }
-
-    void createInitAccount() throws SQLException {
-        User user = new User("admin", "admin");
-        DatabaseHelper.getUserDao().createIfNotExists(user);
     }
 
     User testUser() {

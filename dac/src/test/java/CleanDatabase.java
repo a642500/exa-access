@@ -46,14 +46,23 @@ public class CleanDatabase {
         TableUtils.dropTable(mConnectionSource, User.class, false);
         TableUtils.dropTable(mConnectionSource, MObject.class, false);
         TableUtils.dropTable(mConnectionSource, AccessRecord.class, false);
+        mConnectionSource.close();
     }
 
     @Test
     public void createTestEnvironment() throws SQLException {
         final ConnectionSource mConnectionSource = new JdbcConnectionSource(ModelTest.URL, new MysqlDatabaseType());
 
-        for (int i = 0; i < TEST_USER_NUM; i++) {
-            DatabaseHelper.getUserDao().create(new User(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i));
-        }
+        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
+
+
+        User user = new User("admin", "admin");
+        DatabaseHelper.getUserDao().createIfNotExists(user);
+
+//        for (int i = 0; i < TEST_USER_NUM; i++) {
+//            DatabaseHelper.getUserDao().create(new User(TEST_USER_PREFIX + i, TEST_USRE_PASSWORD_PREFIX + i));
+//        }
     }
 }

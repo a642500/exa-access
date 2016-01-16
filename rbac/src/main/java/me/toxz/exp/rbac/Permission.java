@@ -12,12 +12,12 @@ public class Permission {
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true) private Object object;
     @DatabaseField(canBeNull = false) private Type type;
 
-    public int get_id() {
-        return _id;
+    public Permission(Object object, Type type) {
+        this.object = object;
+        this.type = type;
     }
 
     public Object getObject() {
-
         return object;
     }
 

@@ -23,7 +23,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import me.toxz.exp.dac.data.DatabaseHelper;
 import me.toxz.exp.dac.data.model.User;
 
 import java.io.IOException;
@@ -51,20 +50,24 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         mPrimaryStage = primaryStage;
-        primaryStage.setTitle("Login");
-        primaryStage.setScene(getFirstScene());
+        goToLogin();
         primaryStage.show();
     }
 
-    private Scene getFirstScene() throws IOException, SQLException {
-        //        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
-        //        return new Scene(root, 400, 300);
-        //TODO just for test, auto login by admin
-        final User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", "admin").queryForFirst();
+    public static void goToLogin() throws IOException, SQLException {
+        mPrimaryStage.setTitle("Login");
+        mPrimaryStage.setScene(getFirstScene());
+    }
 
-        setLoginUser(user);
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
-        return new Scene(root, 1200, 800);
+    private static Scene getFirstScene() throws IOException, SQLException {
+        Parent root = FXMLLoader.load(Main.class.getClassLoader().getResource("Login.fxml"));
+        return new Scene(root, 400, 300);
+        //TODO just for test, auto login by admin
+        //        final User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", "admin").queryForFirst();
+        //
+        //        setLoginUser(user);
+        //        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
+        //        return new Scene(root, 1200, 800);
     }
 }
 

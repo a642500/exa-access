@@ -297,4 +297,12 @@ public class CenterSceneController implements Initializable {
             }
         });
     }
+
+    public void onQuit(ActionEvent actionEvent) {
+        System.exit(0);
+    }
+
+    public void onSignOut(ActionEvent actionEvent) throws IOException, SQLException {
+        Main.goToLogin();
+    }
 }

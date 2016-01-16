@@ -8,9 +8,7 @@ import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.rh.RH;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,6 +24,7 @@ public class URA {
         // get all can assign by this role and this role's sub
         final Set<CanAssign> canAssigns = new HashSet<>();
         final Set<Role> children = RH.getAllChildren(role);
+        children.add(role);
         for (Role child : children) {
             canAssigns.addAll(DatabaseHelper.getCanAssignDao().queryForMatching(new CanAssign(null, child, null)));
         }
@@ -38,10 +37,11 @@ public class URA {
     }
 
     public static boolean canStrongRevoke(Session session, User target, Role role) throws SQLException {
-        //TODO get target those roles which >= role
         // if can revoke all those roles, then return true
-        List<Role> rolesAbove = new ArrayList<>();
-        return rolesAbove.stream().allMatch(toRevoke -> {
+        Set<Role> roleParents = RH.getAllParents(role);
+        // get target those roles which >= role
+        roleParents.add(role);
+        return roleParents.stream().allMatch(toRevoke -> {
             try {
                 return canRevoke(session, toRevoke);
             } catch (SQLException e) {
@@ -60,6 +60,7 @@ public class URA {
         // get all can revoke by this role and this role's sub
         final Set<CanRevoke> canRevokes = new HashSet<>();
         final Set<Role> children = RH.getAllChildren(operator);
+        children.add(operator);
         for (Role child : children) {
             canRevokes.addAll(DatabaseHelper.getCanRevokeDao().queryForMatching(new CanRevoke(operator, null)));
         }

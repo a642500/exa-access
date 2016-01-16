@@ -22,19 +22,26 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
-import com.sun.istack.internal.NotNull;
 import me.toxz.exp.rbac.Object;
 import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
+import me.toxz.exp.rbac.User;
 import me.toxz.exp.rbac.data.DatabaseHelper;
 import me.toxz.exp.rbac.pa.AccessRecord;
+import me.toxz.exp.rbac.pra.CanAssignp;
+import me.toxz.exp.rbac.pra.CanRevokep;
+import me.toxz.exp.rbac.pra.Conditionp;
+import me.toxz.exp.rbac.rh.ExtendRecord;
+import me.toxz.exp.rbac.ua.RoleRecord;
+import me.toxz.exp.rbac.ura.CanAssign;
+import me.toxz.exp.rbac.ura.CanRevoke;
+import me.toxz.exp.rbac.ura.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.junit.Assert.assertEquals;
@@ -49,94 +56,84 @@ public class ModelTest {
     public static final String TEST_ROLE_NAME = "test_role";
     public static final String TEST_PASSWORD = "test_password";
     public static final String TEST_OBJECT_PATH = "test_object_path";
+    private static Dao<me.toxz.exp.rbac.Object, Integer> mObjectDao;
+    private static Dao<Role, Integer> mRoleDao;
+    private static Dao<User, Integer> mUserDao;
+    private static Dao<CanAssign, Integer> mCanAssignDao;
+    private static Dao<CanRevoke, Integer> mCanRevokeDao;
+    private static Dao<Condition, Integer> mConditionDao;
+    private static Dao<CanAssignp, Integer> mCanAssignpDao;
+    private static Dao<CanRevokep, Integer> mCanRevokepDao;
+    private static Dao<Conditionp, Integer> mConditionpDao;
+    private static Dao<Permission, Integer> mPermissionDao;
+    private static Dao<AccessRecord, Integer> mAccessRecordDao;
+    private static Dao<RoleRecord, Integer> mRoleRecordDao;
+    private static Dao<ExtendRecord, Integer> mExtendRecordDao;
     private ConnectionSource mConnectionSource;
     private DatabaseType mDatabaseType;
-    private Dao<Role, Integer> daoRole;
-    private Dao<Object, Integer> daoObject;
-    private Dao<AccessRecord, Integer> daoAccess;
-
 
     @Before
     public void setUp() throws SQLException {
         mDatabaseType = new MysqlDatabaseType();
         mConnectionSource = new JdbcConnectionSource(URL, mDatabaseType);
 
-        daoRole = DatabaseHelper.getRoleDao();
-        daoObject = DatabaseHelper.getObjectDao();
-        daoAccess = DatabaseHelper.getAccessRecordDao();
-    }
-
-    Role testRole() {
-        return new Role(TEST_ROLE_NAME);
-    }
-
-    Role findRoleInDatabase(Role role) throws SQLException {
-        return DatabaseHelper.getRoleDao().queryForMatching(testRole()).get(0);
-    }
-
-    @Test
-    public void testCreateAndDeleteRole() throws SQLException {
-        final Role role = new Role(TEST_ROLE_NAME);
-        assertEquals(1, daoRole.create(role));
-
-        final Role created = DatabaseHelper.getRoleDao().queryForMatching(testRole()).get(0);
-        assertEquals(1, daoRole.delete(created));
-    }
-
-    void createRole(Role role) throws SQLException {
-        assertEquals(1, daoRole.create(role));
-    }
-
-    void deleteRole(Role role) throws SQLException {
-        assertEquals(1, daoRole.delete(role));
+        mObjectDao = DatabaseHelper.getObjectDao();
+        mRoleDao = DatabaseHelper.getRoleDao();
+        mUserDao = DatabaseHelper.getUserDao();
+        mCanAssignDao = DatabaseHelper.getCanAssignDao();
+        mCanRevokeDao = DatabaseHelper.getCanRevokeDao();
+        mConditionDao = DatabaseHelper.getConditionDao();
+        mCanAssignpDao = DatabaseHelper.getCanAssignpDao();
+        mCanRevokepDao = DatabaseHelper.getCanRevokepDao();
+        mConditionpDao = DatabaseHelper.getConditionpDao();
+        mPermissionDao = DatabaseHelper.getPermissionDao();
+        mAccessRecordDao = DatabaseHelper.getAccessRecordDao();
+        mRoleRecordDao = DatabaseHelper.getRoleRecordDao();
+        mExtendRecordDao = DatabaseHelper.getExtendRecordDao();
     }
 
     @Test
     public void createAndDeleteRole() throws SQLException {
-        createRole(testRole());
-        final Role role = findRoleInDatabase(testRole());
-
-        final Object object = testObject(role);
-        createObject(object);
-        final Object objectCreated = findObjectInDataBase(object);
-        deleteObject(objectCreated);
+        TransactionManager.callInTransaction(mConnectionSource, () -> {
+            final Role role = new Role(TEST_ROLE_NAME);
+            assertEquals(1, mRoleDao.create(role));
+            assertEquals(1, mRoleDao.delete(role));
+            return null;
+        });
     }
 
-    Object testObject(@NotNull Role own) {
-        return new Object(TEST_OBJECT_PATH, own);
-    }
 
-    void createObject(Object object) throws SQLException {
-        assertEquals(1, daoObject.create(object));
-    }
+    @Test
+    public void createAndDeleteObject() throws SQLException {
+        TransactionManager.callInTransaction(mConnectionSource, () -> {
+            final Role role = new Role(TEST_ROLE_NAME);
+            assertEquals(1, mRoleDao.create(role));
+            final Object object = new Object(TEST_OBJECT_PATH, role);
+            assertEquals(1, mObjectDao.create(object));
 
-    Object findObjectInDataBase(Object object) throws SQLException {
-        return daoObject.queryForMatching(object).get(0);
-    }
-
-    void deleteObject(Object object) throws SQLException {
-        assertEquals(1, daoObject.delete(object));
+            assertEquals(1, mObjectDao.delete(object));
+            assertEquals(1, mRoleDao.delete(role));
+            return null;
+        });
     }
 
     @Test
     public void createAccessRecord() throws SQLException {
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
-            createRole(testRole());
-            final Role role = findRoleInDatabase(testRole());
+            final Role role = new Role(TEST_ROLE_NAME);
+            assertEquals(1, mRoleDao.create(role));
+            final Object object = new Object(TEST_OBJECT_PATH, role);
+            assertEquals(1, mObjectDao.create(object));
+            final Permission permission = new Permission(object, Permission.Type.WRITE);
+            assertEquals(1, mPermissionDao.create(permission));
 
-            createObject(testObject(role));
-            final Object object = findObjectInDataBase(testObject(role));
+            final AccessRecord access = new AccessRecord(role, permission);
+            assertEquals(1, mAccessRecordDao.create(access));
 
-            AccessRecord access = new AccessRecord(role, new Permission(object, Permission.Type.WRITE));
 
-            assertEquals(1, daoAccess.create(access));
-            List<AccessRecord> accessRecords = daoAccess.queryForMatching(access);
-            assertEquals(1, accessRecords.size());
-
-            assertEquals(1, daoAccess.delete(accessRecords));
-
-            deleteObject(object);
-            deleteRole(role);
+            assertEquals(1, mAccessRecordDao.delete(access));
+            assertEquals(1, mObjectDao.delete(object));
+            assertEquals(1, mRoleDao.delete(role));
             return null;
         });
 

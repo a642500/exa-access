@@ -24,11 +24,11 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.sun.istack.internal.NotNull;
+import me.toxz.exp.rbac.Object;
+import me.toxz.exp.rbac.Permission;
 import me.toxz.exp.rbac.Role;
 import me.toxz.exp.rbac.data.DatabaseHelper;
-import me.toxz.exp.rbac.data.model.AccessRecord;
-import me.toxz.exp.rbac.data.model.AccessType;
-import me.toxz.exp.rbac.data.model.MObject;
+import me.toxz.exp.rbac.pa.AccessRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,17 +47,18 @@ import static org.junit.Assert.assertEquals;
 public class ModelTest {
     public static final String URL = DatabaseHelper.URL;
     public static final String TEST_USERNAME = "test";
+    public static final String TEST_ROLE_NAME = "test_role";
     public static final String TEST_PASSWORD = "test_password";
     public static final String TEST_OBJECT_PATH = "test_object_path";
     private ConnectionSource mConnectionSource;
     private DatabaseType mDatabaseType;
     private Dao<Role, Integer> daoUser;
-    private Dao<MObject, Integer> daoObject;
+    private Dao<Object, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
 
     private void init() throws SQLException {
         TableUtils.createTableIfNotExists(mConnectionSource, Role.class);
-        TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Object.class);
         TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
         createInitAccount();
     }
@@ -71,17 +72,17 @@ public class ModelTest {
         } catch (SQLException ignored) {
         }
         daoUser = DatabaseHelper.getRoleDao();
-        daoObject = DatabaseHelper.getMObjectDao();
+        daoObject = DatabaseHelper.getObjectDao();
         daoAccess = DatabaseHelper.getAccessRecordDao();
     }
 
     void createInitAccount() throws SQLException {
-        Role role = new Role("admin", "admin");
+        Role role = new Role("admin");
         DatabaseHelper.getRoleDao().createIfNotExists(role);
     }
 
     Role testUser() {
-        return new Role(TEST_USERNAME, TEST_PASSWORD);
+        return new Role(TEST_ROLE_NAME);
     }
 
     Role findUserInDatabase(Role role) throws SQLException {
@@ -110,25 +111,25 @@ public class ModelTest {
         createUser(testUser());
         final Role role = findUserInDatabase(testUser());
 
-        final MObject object = testObject(role);
+        final Object object = testObject(role);
         createObject(object);
-        final MObject objectCreated = findObjectInDataBase(object);
+        final Object objectCreated = findObjectInDataBase(object);
         deleteObject(objectCreated);
     }
 
-    MObject testObject(@NotNull Role own) {
-        return new MObject(TEST_OBJECT_PATH, own);
+    Object testObject(@NotNull Role own) {
+        return new Object(TEST_OBJECT_PATH, own);
     }
 
-    void createObject(MObject object) throws SQLException {
+    void createObject(Object object) throws SQLException {
         assertEquals(1, daoObject.create(object));
     }
 
-    MObject findObjectInDataBase(MObject object) throws SQLException {
+    Object findObjectInDataBase(Object object) throws SQLException {
         return daoObject.queryForMatching(object).get(0);
     }
 
-    void deleteObject(MObject object) throws SQLException {
+    void deleteObject(Object object) throws SQLException {
         assertEquals(1, daoObject.delete(object));
     }
 
@@ -139,9 +140,9 @@ public class ModelTest {
             final Role role = findUserInDatabase(testUser());
 
             createObject(testObject(role));
-            final MObject object = findObjectInDataBase(testObject(role));
+            final Object object = findObjectInDataBase(testObject(role));
 
-            AccessRecord access = new AccessRecord(role, object, AccessType.WRITE, role);
+            AccessRecord access = new AccessRecord(role, new Permission(object, Permission.Type.WRITE));
 
             assertEquals(1, daoAccess.create(access));
             List<AccessRecord> accessRecords = daoAccess.queryForMatching(access);

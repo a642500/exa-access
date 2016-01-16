@@ -16,12 +16,12 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.fx.bean;
+package me.toxz.exp.rbac.fx.bean;
 
 import javafx.beans.property.SimpleStringProperty;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.AccessType;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.rbac.data.model.AccessRecord;
+import me.toxz.exp.rbac.data.model.AccessType;
+import me.toxz.exp.rbac.data.model.Role;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ public class Grant {
     public Grant(AccessType accessType, List<AccessRecord> granted) {
         this.accessType = accessType;
         this.granted = granted;
-        this.grantedUsersName = new SimpleStringProperty(granted.stream().map(AccessRecord::getGrantedUser).map(User::getUsername).collect(Collectors.joining(" ")));
+        this.grantedUsersName = new SimpleStringProperty(granted.stream().map(AccessRecord::getGrantedRole).map(Role::getUsername).collect(Collectors.joining(" ")));
     }
 
     public AccessType getAccessType() {

@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.fx;
+package me.toxz.exp.rbac.fx;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,8 +27,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.model.Role;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,12 +57,12 @@ public class LoginController extends AnchorPane implements Initializable {
         final String username = userId.getText();
         final String pass = password.getText();
 
-        final User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", username).queryForFirst();
+        final Role role = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", username).queryForFirst();
 
-        if (user != null) {
-            if (user.isPasswordValidate(pass)) {
+        if (role != null) {
+            if (role.isPasswordValidate(pass)) {
                 errorMessage.setText("Login success.");
-                Main.setLoginUser(user);
+                Main.setLoginUser(role);
                 goToMainScene();
             } else {
                 errorMessage.setText("Account or password is incorrect");
@@ -73,7 +73,7 @@ public class LoginController extends AnchorPane implements Initializable {
     }
 
     public void processSignUp(ActionEvent actionEvent) {
-        Dialog<User> signUpDialog = new Dialog<>();
+        Dialog<Role> signUpDialog = new Dialog<>();
 
         DialogPane pane = signUpDialog.getDialogPane();
 

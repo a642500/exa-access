@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.fx;
+package me.toxz.exp.rbac.fx;
 
 import com.j256.ormlite.dao.Dao;
 import javafx.event.ActionEvent;
@@ -30,12 +30,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.AccessType;
-import me.toxz.exp.dac.data.model.MObject;
-import me.toxz.exp.dac.data.model.User;
-import me.toxz.exp.dac.fx.animation.ShakeTransition;
+import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.model.AccessRecord;
+import me.toxz.exp.rbac.data.model.AccessType;
+import me.toxz.exp.rbac.data.model.MObject;
+import me.toxz.exp.rbac.data.model.Role;
+import me.toxz.exp.rbac.fx.animation.ShakeTransition;
 
 import java.io.IOException;
 import java.net.URL;
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class GrantDialogController implements Initializable {
     private static Stage mStage;
     private static Consumer<AccessRecord> mResultCallback;
-    @FXML ComboBox<User> userComboBox;
+    @FXML ComboBox<Role> userComboBox;
     @FXML ComboBox<MObject> objectComboBox;
     @FXML ChoiceBox<AccessType> permissionChoiceBox;
     @FXML Label headLabel;
@@ -80,20 +80,20 @@ public class GrantDialogController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            User user = Main.getLoginUser();
-            List<User> grantable = DatabaseHelper.getUserDao().queryForAll();
-            grantable.remove(User.admin());
-            grantable.remove(user);
+            Role role = Main.getLoginUser();
+            List<Role> grantable = DatabaseHelper.getUserDao().queryForAll();
+            grantable.remove(Role.admin());
+            grantable.remove(role);
             userComboBox.getItems().addAll(grantable);
             userComboBox.getSelectionModel().select(0);
 
             final Dao<AccessRecord, Integer> accessRecordDao = DatabaseHelper.getAccessRecordDao();
-            List<AccessRecord> controllable = accessRecordDao.queryForMatching(new AccessRecord(user, null, AccessType.CONTROL, null));
+            List<AccessRecord> controllable = accessRecordDao.queryForMatching(new AccessRecord(role, null, AccessType.CONTROL, null));
             objectComboBox.getItems().addAll(controllable.stream().map(AccessRecord::getObject).collect(Collectors.toList()));
 
             objectComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                 try {
-                    List<AccessRecord> records = accessRecordDao.queryForMatching(new AccessRecord(user, newValue, null, null));
+                    List<AccessRecord> records = accessRecordDao.queryForMatching(new AccessRecord(role, newValue, null, null));
                     List<AccessType> types = records.stream().map(AccessRecord::getAccessType).collect(Collectors.toList());
                     types.remove(AccessType.CONTROL);//TODO type1: center
                     //TODO grant repeat.  for example: A has R,C for o, A grant A as R for o. Then two same record in AccessRecord
@@ -115,11 +115,11 @@ public class GrantDialogController implements Initializable {
     }
 
     public void ok(ActionEvent actionEvent) {
-        User user = userComboBox.getSelectionModel().getSelectedItem();
+        Role role = userComboBox.getSelectionModel().getSelectedItem();
         MObject object = objectComboBox.getSelectionModel().getSelectedItem();
         AccessType type = permissionChoiceBox.getSelectionModel().getSelectedItem();
 
-        AccessRecord record = new AccessRecord(user, object, type, Main.getLoginUser());
+        AccessRecord record = new AccessRecord(role, object, type, Main.getLoginUser());
 
         try {
             List<AccessRecord> accessRecords = DatabaseHelper.getAccessRecordDao().queryForMatching(record);
@@ -144,9 +144,9 @@ public class GrantDialogController implements Initializable {
     }
 
     public boolean checkCircle(AccessRecord access) throws SQLException {
-        final User target = access.getSubject();
+        final Role target = access.getSubject();
         final MObject object = access.getObject();
-        final User origin = access.getGrantedUser();
+        final Role origin = access.getGrantedRole();
         final AccessType type = access.getAccessType();
 
         if (target.equals(origin)) {

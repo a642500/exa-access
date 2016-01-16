@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.data.model;
+package me.toxz.exp.rbac.data.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -28,25 +28,27 @@ import com.j256.ormlite.table.DatabaseTable;
 public class AccessRecord {
     @DatabaseField(generatedId = true) private int id;
 
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private User subject;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
+    private Role subject;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private MObject object;
     @DatabaseField(canBeNull = false) private AccessType accessType;
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1) private User grantedUser;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
+    private Role grantedRole;
 
     private AccessRecord() {
         // keep for ORMLite
     }
 
-    public AccessRecord(User subject, MObject object, AccessType accessType, User grantedUser) {
+    public AccessRecord(Role subject, MObject object, AccessType accessType, Role grantedRole) {
         this.subject = subject;
         this.object = object;
         this.accessType = accessType;
-        this.grantedUser = grantedUser;
+        this.grantedRole = grantedRole;
 
     }
 
-    public User getGrantedUser() {
-        return grantedUser;
+    public Role getGrantedRole() {
+        return grantedRole;
     }
 
     public AccessType getAccessType() {
@@ -57,11 +59,11 @@ public class AccessRecord {
         this.accessType = accessType;
     }
 
-    public User getSubject() {
+    public Role getSubject() {
         return subject;
     }
 
-    public void setSubject(User subject) {
+    public void setSubject(Role subject) {
         this.subject = subject;
     }
 

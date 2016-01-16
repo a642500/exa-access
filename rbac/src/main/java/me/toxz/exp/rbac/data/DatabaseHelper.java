@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.data;
+package me.toxz.exp.rbac.data;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -25,9 +25,9 @@ import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.MObject;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.rbac.data.model.AccessRecord;
+import me.toxz.exp.rbac.data.model.MObject;
+import me.toxz.exp.rbac.data.model.Role;
 
 import java.sql.SQLException;
 import java.util.concurrent.Callable;
@@ -36,12 +36,12 @@ import java.util.concurrent.Callable;
  * Created by Carlos on 1/4/16.
  */
 public class DatabaseHelper {
-    public static final String URL = "jdbc:mysql://10.111.213.121/access_exp?user=root&password=9072";
+    public static final String URL = "jdbc:mysql://10.111.213.121/access_exp_rbac?user=root&password=9072";
     public static DatabaseType mDatabaseType;
     private static ConnectionSource mConnectionSource;
     private static Dao<MObject, Integer> mMObjectDao;
     private static Dao<AccessRecord, Integer> mAccessRecordDao;
-    private static Dao<User, Integer> mUserDao;
+    private static Dao<Role, Integer> mUserDao;
 
     public static <T> T callInTransaction(Callable<T> callable) throws SQLException {
         return TransactionManager.callInTransaction(mConnectionSource, callable);
@@ -66,9 +66,9 @@ public class DatabaseHelper {
         return mMObjectDao;
     }
 
-    public static Dao<User, Integer> getUserDao() throws SQLException {
+    public static Dao<Role, Integer> getUserDao() throws SQLException {
         if (mUserDao == null) {
-            mUserDao = open(User.class);
+            mUserDao = open(Role.class);
         }
         return mUserDao;
     }

@@ -16,12 +16,12 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.data.model;
+package me.toxz.exp.rbac.data.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.sun.istack.internal.NotNull;
-import me.toxz.exp.dac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.DatabaseHelper;
 
 import java.sql.SQLException;
 
@@ -29,25 +29,25 @@ import java.sql.SQLException;
  * Created by Carlos on 1/4/16.
  */
 @DatabaseTable
-public class User implements Ject {
-    private static User admin;
+public class Role implements Ject {
+    private static Role admin;
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(canBeNull = false, unique = true) private String username;
     @DatabaseField private String passwordHash;
 
-    private User() {
+    private Role() {
         // keep for ORMLite
     }
 
-    public User(@NotNull String username, String password) {
+    public Role(@NotNull String username, String password) {
         this.username = username;
         updatePassword(password);
     }
 
-    public static User admin() {
+    public static Role admin() {
         if (admin == null) {
             try {
-                admin = DatabaseHelper.getUserDao().queryForMatching(new User("admin", null)).get(0);
+                admin = DatabaseHelper.getUserDao().queryForMatching(new Role("admin", null)).get(0);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -81,12 +81,12 @@ public class User implements Ject {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof User && this._id == ((User) obj)._id;
+        return obj instanceof Role && this._id == ((Role) obj)._id;
     }
 
     @Override
     public int hashCode() {
-        return ("User" + _id).hashCode();
+        return ("Role" + _id).hashCode();
     }
 
     @Override

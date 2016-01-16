@@ -24,11 +24,11 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.sun.istack.internal.NotNull;
-import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.AccessRecord;
-import me.toxz.exp.dac.data.model.AccessType;
-import me.toxz.exp.dac.data.model.MObject;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.model.AccessRecord;
+import me.toxz.exp.rbac.data.model.AccessType;
+import me.toxz.exp.rbac.data.model.MObject;
+import me.toxz.exp.rbac.data.model.Role;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,12 +51,12 @@ public class ModelTest {
     public static final String TEST_OBJECT_PATH = "test_object_path";
     private ConnectionSource mConnectionSource;
     private DatabaseType mDatabaseType;
-    private Dao<User, Integer> daoUser;
+    private Dao<Role, Integer> daoUser;
     private Dao<MObject, Integer> daoObject;
     private Dao<AccessRecord, Integer> daoAccess;
 
     private void init() throws SQLException {
-        TableUtils.createTableIfNotExists(mConnectionSource, User.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Role.class);
         TableUtils.createTableIfNotExists(mConnectionSource, MObject.class);
         TableUtils.createTableIfNotExists(mConnectionSource, AccessRecord.class);
         createInitAccount();
@@ -76,47 +76,47 @@ public class ModelTest {
     }
 
     void createInitAccount() throws SQLException {
-        User user = new User("admin", "admin");
-        DatabaseHelper.getUserDao().createIfNotExists(user);
+        Role role = new Role("admin", "admin");
+        DatabaseHelper.getUserDao().createIfNotExists(role);
     }
 
-    User testUser() {
-        return new User(TEST_USERNAME, TEST_PASSWORD);
+    Role testUser() {
+        return new Role(TEST_USERNAME, TEST_PASSWORD);
     }
 
-    User findUserInDatabase(User user) throws SQLException {
+    Role findUserInDatabase(Role role) throws SQLException {
         return DatabaseHelper.getUserDao().queryForMatching(testUser()).get(0);
     }
 
     @Test
     public void testCreateAndDeleteUser() throws SQLException {
-        final User user = testUser();
-        createUser(user);
+        final Role role = testUser();
+        createUser(role);
 
-        final User created = findUserInDatabase(user);
+        final Role created = findUserInDatabase(role);
         deleteUser(created);
     }
 
-    void createUser(User user) throws SQLException {
-        assertEquals(1, daoUser.create(user));
+    void createUser(Role role) throws SQLException {
+        assertEquals(1, daoUser.create(role));
     }
 
-    void deleteUser(User user) throws SQLException {
-        assertEquals(1, daoUser.delete(user));
+    void deleteUser(Role role) throws SQLException {
+        assertEquals(1, daoUser.delete(role));
     }
 
     @Test
     public void createAndDeleteObject() throws SQLException {
         createUser(testUser());
-        final User user = findUserInDatabase(testUser());
+        final Role role = findUserInDatabase(testUser());
 
-        final MObject object = testObject(user);
+        final MObject object = testObject(role);
         createObject(object);
         final MObject objectCreated = findObjectInDataBase(object);
         deleteObject(objectCreated);
     }
 
-    MObject testObject(@NotNull User own) {
+    MObject testObject(@NotNull Role own) {
         return new MObject(TEST_OBJECT_PATH, own);
     }
 
@@ -136,12 +136,12 @@ public class ModelTest {
     public void createAccessRecord() throws SQLException {
         TransactionManager.callInTransaction(mConnectionSource, (Callable<Void>) () -> {
             createUser(testUser());
-            final User user = findUserInDatabase(testUser());
+            final Role role = findUserInDatabase(testUser());
 
-            createObject(testObject(user));
-            final MObject object = findObjectInDataBase(testObject(user));
+            createObject(testObject(role));
+            final MObject object = findObjectInDataBase(testObject(role));
 
-            AccessRecord access = new AccessRecord(user, object, AccessType.WRITE, user);
+            AccessRecord access = new AccessRecord(role, object, AccessType.WRITE, role);
 
             assertEquals(1, daoAccess.create(access));
             List<AccessRecord> accessRecords = daoAccess.queryForMatching(access);
@@ -150,7 +150,7 @@ public class ModelTest {
             assertEquals(1, daoAccess.delete(accessRecords));
 
             deleteObject(object);
-            deleteUser(user);
+            deleteUser(role);
             return null;
         });
 

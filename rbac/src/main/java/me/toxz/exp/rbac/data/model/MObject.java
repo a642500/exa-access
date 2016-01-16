@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.data.model;
+package me.toxz.exp.rbac.data.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -29,18 +29,19 @@ import com.sun.istack.internal.NotNull;
 public class MObject implements Ject {
     @DatabaseField(generatedId = true) private int _id;
     @DatabaseField(unique = true, canBeNull = false) private String path;
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2) private User owner;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
+    private Role owner;
 
     private MObject() {
         // keep for ORMLite
     }
 
-    public MObject(@NotNull String path, User owner) {
+    public MObject(@NotNull String path, Role owner) {
         this.path = path;
         this.owner = owner;
     }
 
-    public User getOwner() {
+    public Role getOwner() {
         return owner;
     }
 

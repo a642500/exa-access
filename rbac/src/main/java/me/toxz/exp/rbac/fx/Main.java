@@ -16,15 +16,15 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.fx;
+package me.toxz.exp.rbac.fx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.User;
+import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.model.Role;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,18 +34,18 @@ import java.sql.SQLException;
  */
 public class Main extends Application {
     protected static Stage mPrimaryStage;
-    private static User mUser;
+    private static Role mRole;
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public static User getLoginUser() {
-        return mUser;
+    public static Role getLoginUser() {
+        return mRole;
     }
 
-    static void setLoginUser(User user) {
-        mUser = user;
+    static void setLoginUser(Role role) {
+        mRole = role;
     }
 
     @Override
@@ -60,9 +60,9 @@ public class Main extends Application {
         //        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Login.fxml"));
         //        return new Scene(root, 400, 300);
         //TODO just for test, auto login by admin
-        final User user = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", "admin").queryForFirst();
+        final Role role = DatabaseHelper.getUserDao().queryBuilder().where().eq("username", "admin").queryForFirst();
 
-        setLoginUser(user);
+        setLoginUser(role);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CenterScene.fxml"));
         return new Scene(root, 1200, 800);
     }

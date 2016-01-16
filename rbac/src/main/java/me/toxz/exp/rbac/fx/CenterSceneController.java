@@ -16,7 +16,7 @@
  *     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package me.toxz.exp.dac.fx;
+package me.toxz.exp.rbac.fx;
 
 import com.j256.ormlite.dao.Dao;
 import com.sun.istack.internal.NotNull;
@@ -26,11 +26,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import me.toxz.exp.dac.data.DatabaseHelper;
-import me.toxz.exp.dac.data.model.*;
-import me.toxz.exp.dac.fx.animation.ShakeTransition;
-import me.toxz.exp.dac.fx.bean.Access;
-import me.toxz.exp.dac.fx.bean.Grant;
+import me.toxz.exp.rbac.data.DatabaseHelper;
+import me.toxz.exp.rbac.data.model.*;
+import me.toxz.exp.rbac.fx.animation.ShakeTransition;
+import me.toxz.exp.rbac.fx.bean.Access;
+import me.toxz.exp.rbac.fx.bean.Grant;
 import org.controlsfx.control.CheckListView;
 
 import java.io.IOException;
@@ -44,9 +44,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static me.toxz.exp.dac.data.DatabaseHelper.*;
-import static me.toxz.exp.dac.data.model.User.admin;
-
 /**
  * Created by Carlos on 1/5/16.
  */
@@ -58,7 +55,7 @@ public class CenterSceneController implements Initializable {
     @FXML Label leftStatus;
 
     @FXML TableView<Access> tableView;
-    @FXML TableColumn<Access, User> subjectColumn;
+    @FXML TableColumn<Access, Role> subjectColumn;
     @FXML TableColumn<Access, MObject> objectColumn;
     @FXML TableColumn<Access, String> permissionColumn;
 
@@ -76,7 +73,7 @@ public class CenterSceneController implements Initializable {
             mCurrentJect = Main.getLoginUser();
             setUpTable();
             refreshTable(mCurrentJect);
-            leftStatus.setText(String.format("Current User: %s", mCurrentJect.toString()));
+            leftStatus.setText(String.format("Current Role: %s", mCurrentJect.toString()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,8 +101,8 @@ public class CenterSceneController implements Initializable {
     }
 
     private void refreshTree() throws SQLException {
-        List<TreeItem<Ject>> userItems = getUserDao().queryForAll().stream().filter(user -> !user.equals(User.admin())).map((Function<User, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
-        List<TreeItem<Ject>> objectItems = getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
+        List<TreeItem<Ject>> userItems = DatabaseHelper.getUserDao().queryForAll().stream().filter(user -> !user.equals(Role.admin())).map((Function<Role, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
+        List<TreeItem<Ject>> objectItems = DatabaseHelper.getMObjectDao().queryForAll().stream().map((Function<MObject, TreeItem<Ject>>) TreeItem::new).collect(Collectors.toList());
 
         subjectTreeItem.getChildren().setAll(userItems);
         objectTreeItem.getChildren().setAll(objectItems);
@@ -120,13 +117,13 @@ public class CenterSceneController implements Initializable {
 
     private void refreshTable(@NotNull final Ject ject) {
         AccessRecord match;
-        if (ject instanceof User) match = new AccessRecord(((User) ject), null, null, null);
+        if (ject instanceof Role) match = new AccessRecord(((Role) ject), null, null, null);
         else if (ject instanceof MObject) match = new AccessRecord(null, ((MObject) ject), null, null);
         else throw new IllegalArgumentException();
 
         List<Access> accesses = null;
         try {
-            accesses = DatabaseHelper.getAccessRecordDao().queryForMatching(match).stream().collect(Collectors.groupingBy(accessRecord -> ject instanceof User ? accessRecord.getObject() : accessRecord.getSubject())).values().stream().map(Access::new).collect(Collectors.toList());
+            accesses = DatabaseHelper.getAccessRecordDao().queryForMatching(match).stream().collect(Collectors.groupingBy(accessRecord -> ject instanceof Role ? accessRecord.getObject() : accessRecord.getSubject())).values().stream().map(Access::new).collect(Collectors.toList());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -174,15 +171,15 @@ public class CenterSceneController implements Initializable {
     private void revoke(AccessRecord record) {
         try {
 
-            User user = record.getSubject();
+            Role role = record.getSubject();
             final MObject object = record.getObject();
             Dao<AccessRecord, Integer> dao = DatabaseHelper.getAccessRecordDao();
             dao.delete(record);
 
-            List<AccessRecord> accessRecords = dao.queryForMatching(new AccessRecord(null, object, null, user));
+            List<AccessRecord> accessRecords = dao.queryForMatching(new AccessRecord(null, object, null, role));
             for (AccessRecord accessRecord : accessRecords) {
-                AccessRecord match = new AccessRecord(user, object, accessRecord.getAccessType(), null);
-                if (dao.queryForMatching(match).size() == 0 || accessRecord.getAccessType() != AccessType.CONTROL && dao.queryForMatching(new AccessRecord(user, object, AccessType.CONTROL, null)).size() == 0) {
+                AccessRecord match = new AccessRecord(role, object, accessRecord.getAccessType(), null);
+                if (dao.queryForMatching(match).size() == 0 || accessRecord.getAccessType() != AccessType.CONTROL && dao.queryForMatching(new AccessRecord(role, object, AccessType.CONTROL, null)).size() == 0) {
                     revoke(accessRecord);
                 }
             }
@@ -219,7 +216,7 @@ public class CenterSceneController implements Initializable {
                 dialog.setHeaderText("Please input the path!");
                 ae.consume();
             } else try {
-                if (!getMObjectDao().queryForMatching(new MObject(path, null)).isEmpty()) {
+                if (!DatabaseHelper.getMObjectDao().queryForMatching(new MObject(path, null)).isEmpty()) {
                     shake.accept(textField);
                     dialog.setHeaderText("Object path exist! Try another one.");
                     ae.consume();
@@ -235,12 +232,12 @@ public class CenterSceneController implements Initializable {
         result.ifPresent(s -> {
             try {
                 DatabaseHelper.callInTransaction(() -> {
-                    User user = Main.getLoginUser();
-                    final MObject o = new MObject(s, user);
-                    getMObjectDao().create(o);
-                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(user, o, accessType, admin())).collect(Collectors.toList());
+                    Role role = Main.getLoginUser();
+                    final MObject o = new MObject(s, role);
+                    DatabaseHelper.getMObjectDao().create(o);
+                    List<AccessRecord> accessRecords = Arrays.stream(AccessType.values()).map(accessType -> new AccessRecord(role, o, accessType, Role.admin())).collect(Collectors.toList());
                     for (AccessRecord accessRecord : accessRecords) {
-                        getAccessRecordDao().create(accessRecord);
+                        DatabaseHelper.getAccessRecordDao().create(accessRecord);
                     }
                     return null;
                 });

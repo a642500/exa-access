@@ -52,9 +52,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(value = JUnit4.class)
 public class ModelTest {
     public static final String URL = DatabaseHelper.URL;
-    public static final String TEST_USERNAME = "test";
-    public static final String TEST_ROLE_NAME = "test_role";
-    public static final String TEST_PASSWORD = "test_password";
+    public static final String TEST_USERNAME = "user";
+    public static final String TEST_ROLE_NAME = "role";
+    public static final String TEST_PERMISSION_NAME = "p";
+    public static final int TEST_ROLE_NUM = 6;
+    public static final int TEST_PERMISSION_NUM = 6;
+    public static final String TEST_PASSWORD = "pass";
     public static final String TEST_OBJECT_PATH = "test_object_path";
     private static Dao<me.toxz.exp.rbac.Object, Integer> mObjectDao;
     private static Dao<Role, Integer> mRoleDao;
@@ -102,7 +105,6 @@ public class ModelTest {
         });
     }
 
-
     @Test
     public void createAndDeleteObject() throws SQLException {
         TransactionManager.callInTransaction(mConnectionSource, () -> {
@@ -138,5 +140,25 @@ public class ModelTest {
         });
 
 
+    }
+
+    @Test
+    public void test() throws SQLException {
+        TransactionManager.callInTransaction(mConnectionSource, () -> {
+            for (int i = 0; i < TEST_ROLE_NUM; i++) {
+                Role role = new Role(TEST_ROLE_NAME + (i + 1));
+                mRoleDao.create(role);
+            }
+
+            Role role = mRoleDao.queryForAll().get(0);
+
+            for (int i = 0; i < TEST_PERMISSION_NUM; i++) {
+                Permission permission = new Permission(new Object("o" + (i + 1), role), Permission.Type.WRITE);
+                mPermissionDao.create(permission);
+            }
+
+
+            return null;
+        });
     }
 }
